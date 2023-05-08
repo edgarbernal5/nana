@@ -641,6 +641,7 @@ namespace detail
 
 		switch(msg)
 		{
+        case WM_ACTIVATEAPP:
 		case WM_COMMAND:
 		case WM_DESTROY:
 		case WM_DPICHANGED:
@@ -808,6 +809,15 @@ namespace detail
 						i->second();
 				}
 				break;
+            case WM_ACTIVATEAPP:
+			{
+                arg_activate arg;
+                arg.window_handle = msgwnd;
+                arg.activated = wParam ? true : false;
+                brock.emit(event_code::activate, msgwnd, arg, false, &context);
+                def_window_proc = true;
+                break;
+            }
 			case WM_DPICHANGED:
 				wd_manager.update_dpi(msgwnd);
 				{
