@@ -189,6 +189,32 @@ namespace nana
 			}
 		}
 
+		void bedrock::event_enter_size_move(basic_window* wd)
+		{
+			if (wd)
+			{
+				arg_size_move arg;
+				arg.window_handle = wd;
+				emit(event_code::enter_size_move, wd, arg, true, get_thread_context());
+				
+				for (auto& child : wd->children)
+					wd_manager().enter_size_move(child);
+			}
+		}
+
+		void bedrock::event_exit_size_move(basic_window* wd)
+		{
+			if (wd)
+			{
+				arg_size_move arg;
+				arg.window_handle = wd;
+				emit(event_code::exit_size_move, wd, arg, true, get_thread_context());
+
+				for (auto& child : wd->children)
+					wd_manager().exit_size_move(child);
+			}
+		}
+
 		bool bedrock::event_msleave(basic_window* hovered)
 		{
 			if (wd_manager().available(hovered) && hovered->flags.enabled)
@@ -589,6 +615,36 @@ namespace nana
 					}
 					if (bProcess__External_event)
 						evts_ptr->resized.emit(*arg, wd);
+				}
+				break;
+			}
+			case event_code::enter_size_move:
+			{
+				auto arg = dynamic_cast<const arg_size_move*>(&event_arg);
+				if (arg)
+				{
+					{
+						// enable refreshing flag, this is a RAII class for exception-safe
+						flag_guard fguard(this, wd);
+						wd->drawer.enter_size_move(*arg, bForce__EmitInternal);
+					}
+					if (bProcess__External_event)
+						evts_ptr->enter_size_move.emit(*arg, wd);
+				}
+				break;
+			}
+			case event_code::exit_size_move:
+			{
+				auto arg = dynamic_cast<const arg_size_move*>(&event_arg);
+				if (arg)
+				{
+					{
+						// enable refreshing flag, this is a RAII class for exception-safe
+						flag_guard fguard(this, wd);
+						wd->drawer.exit_size_move(*arg, bForce__EmitInternal);
+					}
+					if (bProcess__External_event)
+						evts_ptr->exit_size_move.emit(*arg, wd);
 				}
 				break;
 			}

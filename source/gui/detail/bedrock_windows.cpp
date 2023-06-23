@@ -648,6 +648,8 @@ namespace detail
 		case WM_SHOWWINDOW:
 		case WM_SIZING:
 		case WM_MOVE:
+		case WM_ENTERSIZEMOVE:
+		case WM_EXITSIZEMOVE:
 		case WM_SIZE:
 		case WM_SETFOCUS:
 		case WM_KILLFOCUS:
@@ -1364,6 +1366,16 @@ namespace detail
 				break;
 			case WM_MOVE:
 				brock.event_move(msgwnd, (int)(short) LOWORD(lParam), (int)(short) HIWORD(lParam));
+				break;
+				
+			case WM_ENTERSIZEMOVE:
+				brock.event_enter_size_move(msgwnd);
+				def_window_proc = true;
+				break;
+
+			case WM_EXITSIZEMOVE:
+				brock.event_exit_size_move(msgwnd);
+				def_window_proc = true;
 				break;
 			case WM_PAINT:
 				{
