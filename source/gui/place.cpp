@@ -3839,7 +3839,7 @@ namespace nana
 		{
 			hit_fn = [&hit_fn, this](implement::division* div) -> implement::division*
 			{
-				if (division::kind::dock == div->kind_of_division)
+				if (division::kind::dock == div->kind_of_division && div->children.size() == 0)
 				{
 					point pos;
 					API::calc_screen_point(window_handle, pos);
