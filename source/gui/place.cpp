@@ -4791,6 +4791,17 @@ namespace nana
 		return result;
 	}
 
+	void place::update_pane(const pane_info& info)
+	{
+		auto it = impl_->docks.find(info.id);
+		if (it != impl_->docks.end())
+		{
+			it->second->pane_info = info;
+
+			it->second->dockarea->update();
+		}
+	}
+
 	place::error::error(const std::string& what,
 		const place& plc,
 		std::string field,
