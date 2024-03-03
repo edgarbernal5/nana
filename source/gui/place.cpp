@@ -719,6 +719,12 @@ namespace nana
 		void hide_indicators();
 		void show_pane_indicators(division* div);
 
+		void pane_indicator_up(paint::graphics& graph);
+		void pane_indicator_down(paint::graphics& graph);
+		void pane_indicator_left(paint::graphics& graph);
+		void pane_indicator_right(paint::graphics& graph);
+		void pane_indicator_tab(paint::graphics& graph);
+
 		bool hit_indicators(dock_position* position = nullptr) const;
 		division* hit_panes_or_dock();
 		division* hit_dock();
@@ -3644,6 +3650,14 @@ namespace nana
 				continue;
 			}
 
+			auto dock_div = (div_dockpane*)div;
+			if (!dock_div->dockable_field->pane_info.show_caption && dock_position::tab == i->position)
+			{
+				if (i->docker)
+					i->docker.reset();
+
+				continue;
+			}
 			if (!i->docker)
 			{
 				if (dock_position::up == i->position)
@@ -3652,17 +3666,9 @@ namespace nana
 					i->docker.reset(new form(window_handle, { pos.x, pos.y, 32, 32 }, form::appear::bald<>()));
 					i->delta = i->docker->pos() - pos;
 					drawing dw(i->docker->handle());
-					dw.draw([](paint::graphics& graph)
+					dw.draw([this](paint::graphics& graph)
 					{
-						graph.rectangle(false, colors::midnight_blue);
-						graph.rectangle({ 1, 1, 30, 30 }, true, colors::light_sky_blue);
-
-						facade<element::arrow> arrow("solid_triangle");
-						arrow.direction(::nana::direction::north);
-						arrow.draw(graph, colors::light_sky_blue, colors::midnight_blue, { 8, 14, 16, 16 }, element_state::normal);
-
-						graph.rectangle({ 4, 5, 24, 11 }, true, colors::midnight_blue);
-						graph.rectangle({ 5, 8, 22, 7 }, true, colors::button_face);
+						pane_indicator_up(graph);
 					});
 				}
 				else if (dock_position::down == i->position)
@@ -3671,17 +3677,9 @@ namespace nana
 					i->docker.reset(new form(window_handle, { pos.x, pos.y, 32, 32 }, form::appear::bald<>()));
 					i->delta = i->docker->pos() - pos;
 					drawing dw(i->docker->handle());
-					dw.draw([](paint::graphics& graph)
+					dw.draw([this](paint::graphics& graph)
 					{
-						graph.rectangle(false, colors::midnight_blue);
-						graph.rectangle({ 1, 1, 30, 30 }, true, colors::light_sky_blue);
-
-						facade<element::arrow> arrow("solid_triangle");
-						arrow.direction(::nana::direction::south);
-						arrow.draw(graph, colors::light_sky_blue, colors::midnight_blue, { 8, 1, 16, 16 }, element_state::normal);
-
-						graph.rectangle({ 4, 16, 24, 11 }, true, colors::midnight_blue);
-						graph.rectangle({ 5, 19, 22, 7 }, true, colors::button_face);
+						pane_indicator_down(graph);
 					});
 				}
 				else if (dock_position::left == i->position)
@@ -3690,17 +3688,9 @@ namespace nana
 					i->docker.reset(new form(window_handle, { pos.x, pos.y, 32, 32 }, form::appear::bald<>()));
 					i->delta = i->docker->pos() - pos;
 					drawing dw(i->docker->handle());
-					dw.draw([](paint::graphics& graph)
+					dw.draw([this](paint::graphics& graph)
 					{
-						graph.rectangle(false, colors::midnight_blue);
-						graph.rectangle({ 1, 1, 30, 30 }, true, colors::light_sky_blue);
-
-						facade<element::arrow> arrow("solid_triangle");
-						arrow.direction(::nana::direction::west);
-						arrow.draw(graph, colors::light_sky_blue, colors::midnight_blue, { 16, 8, 16, 16 }, element_state::normal);
-
-						graph.rectangle({ 5, 4, 11, 24 }, true, colors::midnight_blue);
-						graph.rectangle({ 6, 7, 9, 20 }, true, colors::button_face);
+						pane_indicator_left(graph);
 					});
 				}
 				else if (dock_position::right == i->position)
@@ -3709,17 +3699,9 @@ namespace nana
 					i->docker.reset(new form(window_handle, { pos.x, pos.y, 32, 32 }, form::appear::bald<>()));
 					i->delta = i->docker->pos() - pos;
 					drawing dw(i->docker->handle());
-					dw.draw([](paint::graphics& graph)
+					dw.draw([this](paint::graphics& graph)
 					{
-						graph.rectangle(false, colors::midnight_blue);
-						graph.rectangle({ 1, 1, 30, 30 }, true, colors::light_sky_blue);
-
-						facade<element::arrow> arrow("solid_triangle");
-						arrow.direction(::nana::direction::east);
-						arrow.draw(graph, colors::light_sky_blue, colors::midnight_blue, { 2, 8, 16, 16 }, element_state::normal);
-
-						graph.rectangle({ 17, 4, 11, 24 }, true, colors::midnight_blue);
-						graph.rectangle({ 18, 7, 9, 20 }, true, colors::button_face);
+						pane_indicator_right(graph);
 					});
 				}
 				else if (dock_position::tab == i->position)
@@ -3728,13 +3710,9 @@ namespace nana
 					i->docker.reset(new form(window_handle, { pos.x, pos.y, 32, 32 }, form::appear::bald<>()));
 					i->delta = i->docker->pos() - pos;
 					drawing dw(i->docker->handle());
-					dw.draw([](paint::graphics& graph)
+					dw.draw([this](paint::graphics& graph)
 					{
-						graph.rectangle(false, colors::midnight_blue);
-						graph.rectangle({ 1, 1, 30, 30 }, true, colors::light_sky_blue);
-
-						graph.rectangle({ 4, 4, 24, 11 + 12 }, true, colors::midnight_blue);
-						graph.rectangle({ 5, 7, 22, 7 + 12 }, true, colors::button_face);
+						pane_indicator_tab(graph);
 					});
 				}
 				else
@@ -3783,6 +3761,67 @@ namespace nana
 					continue;
 			}
 		}
+	}
+
+	void place::implement::pane_indicator_up(paint::graphics& graph)
+	{
+		graph.rectangle(false, colors::midnight_blue);
+		graph.rectangle({ 1, 1, 30, 30 }, true, colors::light_sky_blue);
+
+		facade<element::arrow> arrow("solid_triangle");
+		arrow.direction(::nana::direction::north);
+		arrow.draw(graph, colors::light_sky_blue, colors::midnight_blue, { 8, 14, 16, 16 }, element_state::normal);
+
+		graph.rectangle({ 4, 5, 24, 11 }, true, colors::midnight_blue);
+		graph.rectangle({ 5, 8, 22, 7 }, true, colors::button_face);
+	}
+
+	void place::implement::pane_indicator_down(paint::graphics& graph)
+	{
+		graph.rectangle(false, colors::midnight_blue);
+		graph.rectangle({ 1, 1, 30, 30 }, true, colors::light_sky_blue);
+
+		facade<element::arrow> arrow("solid_triangle");
+		arrow.direction(::nana::direction::south);
+		arrow.draw(graph, colors::light_sky_blue, colors::midnight_blue, { 8, 1, 16, 16 }, element_state::normal);
+
+		graph.rectangle({ 4, 16, 24, 11 }, true, colors::midnight_blue);
+		graph.rectangle({ 5, 19, 22, 7 }, true, colors::button_face);
+	}
+
+	void place::implement::pane_indicator_left(paint::graphics& graph)
+	{
+		graph.rectangle(false, colors::midnight_blue);
+		graph.rectangle({ 1, 1, 30, 30 }, true, colors::light_sky_blue);
+
+		facade<element::arrow> arrow("solid_triangle");
+		arrow.direction(::nana::direction::west);
+		arrow.draw(graph, colors::light_sky_blue, colors::midnight_blue, { 16, 8, 16, 16 }, element_state::normal);
+
+		graph.rectangle({ 5, 4, 11, 24 }, true, colors::midnight_blue);
+		graph.rectangle({ 6, 7, 9, 20 }, true, colors::button_face);
+	}
+
+	void place::implement::pane_indicator_right(paint::graphics& graph)
+	{
+		graph.rectangle(false, colors::midnight_blue);
+		graph.rectangle({ 1, 1, 30, 30 }, true, colors::light_sky_blue);
+
+		facade<element::arrow> arrow("solid_triangle");
+		arrow.direction(::nana::direction::east);
+		arrow.draw(graph, colors::light_sky_blue, colors::midnight_blue, { 2, 8, 16, 16 }, element_state::normal);
+
+		graph.rectangle({ 17, 4, 11, 24 }, true, colors::midnight_blue);
+		graph.rectangle({ 18, 7, 9, 20 }, true, colors::button_face);
+	}
+
+	void place::implement::pane_indicator_tab(paint::graphics& graph)
+	{
+		graph.rectangle(false, colors::midnight_blue);
+		graph.rectangle({ 1, 1, 30, 30 }, true, colors::light_sky_blue);
+
+		graph.rectangle({ 4, 4, 24, 11 + 12 }, true, colors::midnight_blue);
+		graph.rectangle({ 5, 7, 22, 7 + 12 }, true, colors::button_face);
 	}
 
 	bool place::implement::hit_indicators(dock_position* position) const
