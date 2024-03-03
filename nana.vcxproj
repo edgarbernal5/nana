@@ -194,6 +194,7 @@
     <ClInclude Include="include\nana\verbose_preprocessor.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\gui\widgets\property_grid.cpp" />
     <ClCompile Include="source\audio\detail\audio_device.cpp" />
     <ClCompile Include="source\audio\detail\audio_stream.cpp" />
     <ClCompile Include="source\audio\detail\buffer_preparation.cpp" />
