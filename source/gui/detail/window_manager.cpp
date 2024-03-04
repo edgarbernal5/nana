@@ -699,7 +699,6 @@ namespace detail
 			if (!impl_->wd_register.available(wd))
 				return false;
 
-			auto& brock = bedrock::instance();
 			if (category::flags::root != wd->other.category)
 			{
 				_m_enter_size_move_core(wd);
@@ -1714,8 +1713,8 @@ namespace detail
 		{
 			if (category::flags::root != wd->other.category)	//A root widget always starts at (0, 0) and its children are not to be changed
 			{
-				if (wd->displayed() && wd->effect.bground)
-					window_layer::make_bground(wd);
+				//if (wd->displayed() && wd->effect.bground)
+				//	window_layer::make_bground(wd);
 
 				for (auto child : wd->children)
 					_m_enter_size_move_core(child);
@@ -1731,8 +1730,8 @@ namespace detail
 		{
 			if (category::flags::root != wd->other.category)	//A root widget always starts at (0, 0) and its children are not to be changed
 			{
-				if (wd->displayed() && wd->effect.bground)
-					window_layer::make_bground(wd);
+				//if (wd->displayed() && wd->effect.bground)
+				//	window_layer::make_bground(wd);
 
 				for (auto child : wd->children)
 					_m_exit_size_move_core(child);
