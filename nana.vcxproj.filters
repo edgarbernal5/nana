@@ -402,6 +402,12 @@
     <ClInclude Include="include\nana\verbose_preprocessor.hpp">
       <Filter>include\nana</Filter>
     </ClInclude>
+    <ClInclude Include="include\nana\gui\widgets\pgitems.hpp">
+      <Filter>include\nana\gui\widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nana\gui\widgets\property_grid.hpp">
+      <Filter>include\nana\gui\widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\audio\detail\audio_device.cpp">
@@ -654,6 +660,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="source\gui\widgets\property_grid.cpp">
+      <Filter>source\gui\widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gui\widgets\pgitems.cpp">
       <Filter>source\gui\widgets</Filter>
     </ClCompile>
   </ItemGroup>
