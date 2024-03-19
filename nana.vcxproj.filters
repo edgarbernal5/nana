@@ -291,10 +291,16 @@
     <ClInclude Include="include\nana\gui\widgets\panel.hpp">
       <Filter>include\nana\gui\widgets</Filter>
     </ClInclude>
+    <ClInclude Include="include\nana\gui\widgets\pgitems.hpp">
+      <Filter>include\nana\gui\widgets</Filter>
+    </ClInclude>
     <ClInclude Include="include\nana\gui\widgets\picture.hpp">
       <Filter>include\nana\gui\widgets</Filter>
     </ClInclude>
     <ClInclude Include="include\nana\gui\widgets\progress.hpp">
+      <Filter>include\nana\gui\widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="include\nana\gui\widgets\property_grid.hpp">
       <Filter>include\nana\gui\widgets</Filter>
     </ClInclude>
     <ClInclude Include="include\nana\gui\widgets\scroll.hpp">
@@ -401,12 +407,6 @@
     </ClInclude>
     <ClInclude Include="include\nana\verbose_preprocessor.hpp">
       <Filter>include\nana</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nana\gui\widgets\pgitems.hpp">
-      <Filter>include\nana\gui\widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="include\nana\gui\widgets\property_grid.hpp">
-      <Filter>include\nana\gui\widgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -575,10 +575,16 @@
     <ClCompile Include="source\gui\widgets\panel.cpp">
       <Filter>source\gui\widgets</Filter>
     </ClCompile>
+    <ClCompile Include="source\gui\widgets\pgitems.cpp">
+      <Filter>source\gui\widgets</Filter>
+    </ClCompile>
     <ClCompile Include="source\gui\widgets\picture.cpp">
       <Filter>source\gui\widgets</Filter>
     </ClCompile>
     <ClCompile Include="source\gui\widgets\progress.cpp">
+      <Filter>source\gui\widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gui\widgets\property_grid.cpp">
       <Filter>source\gui\widgets</Filter>
     </ClCompile>
     <ClCompile Include="source\gui\widgets\scroll.cpp">
@@ -658,12 +664,6 @@
     </ClCompile>
     <ClCompile Include="source\unicode_bidi.cpp">
       <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gui\widgets\property_grid.cpp">
-      <Filter>source\gui\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gui\widgets\pgitems.cpp">
-      <Filter>source\gui\widgets</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

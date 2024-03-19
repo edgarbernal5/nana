@@ -18,6 +18,8 @@ namespace nana
 
 	namespace drawerbase::propertygrid
 	{
+		using size_type = std::size_t;
+
 		struct index_pair
 		{
 			std::size_t cat;	//pos of category
@@ -344,7 +346,6 @@ namespace nana
 		{}
 	};
 
-
 	namespace drawerbase::propertygrid
 	{
 		struct propertygrid_events
@@ -398,8 +399,8 @@ namespace nana
 
 		void scroll(const index_pair& pos, bool as_first = false);	///< Scrolls the view to the selected item
 
-		cat_proxy append(std::string str);						///< Appends a new category to the end
-		cat_proxy insert(cat_proxy cat, ::std::string str);		///< Inser a new category before the specified one
+		cat_proxy append(std::string category_name);						///< Appends a new category to the end
+		cat_proxy insert(cat_proxy cat, ::std::string category_name);		///< Insert a new category before the specified one
 
 		cat_proxy at(std::size_t pos) const;			///< Returns the category at the specified position
 		std::size_t find(std::string) const;			///< Finds category with given name. Returns the category position if found or npos otherwise

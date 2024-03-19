@@ -196,8 +196,6 @@
     <ClInclude Include="include\nana\verbose_preprocessor.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\gui\widgets\pgitems.cpp" />
-    <ClCompile Include="source\gui\widgets\property_grid.cpp" />
     <ClCompile Include="source\audio\detail\audio_device.cpp" />
     <ClCompile Include="source\audio\detail\audio_stream.cpp" />
     <ClCompile Include="source\audio\detail\buffer_preparation.cpp" />
@@ -253,8 +251,10 @@
     <ClCompile Include="source\gui\widgets\menu.cpp" />
     <ClCompile Include="source\gui\widgets\menubar.cpp" />
     <ClCompile Include="source\gui\widgets\panel.cpp" />
+    <ClCompile Include="source\gui\widgets\pgitems.cpp" />
     <ClCompile Include="source\gui\widgets\picture.cpp" />
     <ClCompile Include="source\gui\widgets\progress.cpp" />
+    <ClCompile Include="source\gui\widgets\property_grid.cpp" />
     <ClCompile Include="source\gui\widgets\scroll.cpp" />
     <ClCompile Include="source\gui\widgets\skeletons\content_view.cpp" />
     <ClCompile Include="source\gui\widgets\skeletons\text_editor.cpp" />

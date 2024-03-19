@@ -10,6 +10,7 @@
 #include <nana/gui/layout_utility.hpp>
 #include <nana/gui/element.hpp>
 #include <nana/gui/drawing.hpp>
+#include "../../detail/platform_abstraction.hpp"
 
 constexpr auto IBOX_SIZE = 13;
 constexpr auto IBOX_RECT_SIZE = 7;
@@ -427,34 +428,40 @@ namespace nana
 				auto graph_r = available_area();
 
 				bool v = false;
+				auto scroll_scale = platform_abstraction::dpi_scale(scroll.v.handle(), scroll.scale);
 
 				if (graph_r.height < wd_sz.height)
 				{
 					v = true;
-					graph_r.width -= scroll.scale;
+					graph_r.width -= scroll_scale;
 				}
 
 				if (v)
 				{
-					::nana::rectangle r(graph_r.x + graph_r.width, graph_r.y, scroll.scale, graph_r.height);
+					::nana::rectangle r(graph_r.x + graph_r.width, graph_r.y, scroll_scale, graph_r.height);
 					if (scroll.v.empty())
 					{
 						scroll.v.create(wd, r);
 						::nana::API::take_active(scroll.v.handle(), false, wd);
 
 						scroll.v.events().value_changed.connect_unignorable([this](const ::nana::arg_scroll& arg)
-							{
-								v_offset(-static_cast<int>(scroll.v.value()));
-								::nana::API::refresh_window(lister.wd_ptr()->handle());
-							});
+						{
+							v_offset(-static_cast<int>(scroll.v.value()));
+							::nana::API::refresh_window(lister.wd_ptr()->handle());
+						});
 					}
 					else
 						scroll.v.move(r);
 
 				}
 				else if (!scroll.v.empty())
-					scroll.v.close();
+				{
+					scroll.v.amount(1);
+					scroll.v.range(1);
 
+					scroll.v.close();
+				}
+				
 				adjust_scroll_value();
 			}
 
@@ -530,7 +537,7 @@ namespace nana
 				//The area to show the widget
 				r = available_area();
 
-				unsigned width = (scroll.v.empty() ? 0 : scroll.scale);
+				unsigned width = (scroll.v.empty() ? 0 : platform_abstraction::dpi_scale(scroll.v.handle(), scroll.scale));
 
 				if (r.width <= width)
 					return false;
@@ -1543,26 +1550,26 @@ namespace nana
 		ess.update();
 	}
 
-	propertygrid::cat_proxy propertygrid::append(std::string str)
+	propertygrid::cat_proxy propertygrid::append(std::string category)
 	{
 		auto& ess = _m_ess();
 
-		auto pos = find(str);
+		auto pos = find(category);
 		if (pos != npos)
 			return cat_proxy{ &ess, pos };
 
 		internal_scope_guard lock;
-		auto new_cat_ptr = ess.lister.create_cat(std::move(str));
+		auto new_cat_ptr = ess.lister.create_cat(std::move(category));
 		ess.update();
 
 		return cat_proxy{ &ess, new_cat_ptr };
 	}
 
-	auto propertygrid::insert(cat_proxy cat, std::string str) -> cat_proxy
+	auto propertygrid::insert(cat_proxy cat, std::string category_name) -> cat_proxy
 	{
 		internal_scope_guard lock;
 		auto& ess = _m_ess();
-		auto new_cat_ptr = ess.lister.create_cat(cat.position(), std::move(str));
+		auto new_cat_ptr = ess.lister.create_cat(cat.position(), std::move(category_name));
 		return cat_proxy{ &ess, new_cat_ptr };
 	}
 

@@ -24,7 +24,6 @@ namespace nana
 {
 	using pgitem = drawerbase::propertygrid::pgitem;
 
-
 	/// class pg_string
 	class pg_string
 		: public pgitem
