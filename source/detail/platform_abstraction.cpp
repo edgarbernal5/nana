@@ -1382,6 +1382,13 @@ namespace nana
 		return static_cast<unsigned int>(scalar * dpiScale);
 	}
 
+	size_t platform_abstraction::dpi_scale(window wd, size_t scalar)
+	{
+		double dpiScale = static_cast<double>(api::window_dpi(wd) / 96.0);
+
+		return static_cast<size_t>(scalar * dpiScale);
+	}
+
 	nana::size platform_abstraction::dpi_scale(window wd, nana::size size)
 	{
 		double dpiScale = static_cast<double>(api::window_dpi(wd) / 96.0);

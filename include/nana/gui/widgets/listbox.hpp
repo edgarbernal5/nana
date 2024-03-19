@@ -38,1147 +38,1147 @@ namespace nana
 
 	namespace drawerbase::listbox
 	{
-			using size_type = std::size_t;
-			using native_string_type = ::nana::detail::native_string_type;
+		using size_type = std::size_t;
+		using native_string_type = ::nana::detail::native_string_type;
 
-			/// An interface of column operations
-			class column_interface
-			{
-			public:
-				// Destructor
-				virtual ~column_interface() = default;
+		/// An interface of column operations
+		class column_interface
+		{
+		public:
+			// Destructor
+			virtual ~column_interface() = default;
 
-				/// Returns the width of the column, in pixel
-				virtual unsigned width() const noexcept = 0;
+			/// Returns the width of the column, in pixel
+			virtual unsigned width() const noexcept = 0;
 
-				/// Sets width
-				/**
-				 * @param pixels The pixels of width
-				 */
-				virtual void width(unsigned pixels) noexcept = 0;
+			/// Sets width
+			/**
+				* @param pixels The pixels of width
+				*/
+			virtual void width(unsigned pixels) noexcept = 0;
 
-				/// Automatically adjusted width
-				/**
-				 * @param minimum The minimal width of column, in pixel
-				 * @param maximum The maximal width of column, in pixel
-				 */
-				virtual void width(unsigned minimum, unsigned maximum) = 0;
+			/// Automatically adjusted width
+			/**
+				* @param minimum The minimal width of column, in pixel
+				* @param maximum The maximal width of column, in pixel
+				*/
+			virtual void width(unsigned minimum, unsigned maximum) = 0;
 
-				/// Returns the position of the column
-				/**
-				 * @param disp_order Indicates whether the display position or absolute position to be returned
-				 * @return the position of the column.
-				 */
-				virtual size_type position(bool disp_order) const noexcept = 0;
+			/// Returns the position of the column
+			/**
+				* @param disp_order Indicates whether the display position or absolute position to be returned
+				* @return the position of the column.
+				*/
+			virtual size_type position(bool disp_order) const noexcept = 0;
 
-				/// Returns the caption of column
-				virtual std::string text() const noexcept = 0;
+			/// Returns the caption of column
+			virtual std::string text() const noexcept = 0;
 
-				/// Sets the caption of column
-				/**
-				 * @param text_utf8 A UTF-8 string for the caption.
-				 */
-				virtual void text(std::string text_utf8) = 0;
-
-#ifdef __cpp_char8_t
-				virtual void text(std::u8string_view text) = 0;
-#endif
-				/// Sets alignment of column text
-				/**
-				 * @param align Alignment
-				 */
-				virtual void text_align(::nana::align align) noexcept = 0;
-
-				/// Adjusts the width to fit the content
-				/**
-				 * The priority of max: maximum, ranged width, scheme's max_fit_content.
-				 * @param maximum Sets the width of column to the maximum if the width of content is larger than maximum
-				 */
-				virtual void fit_content(unsigned maximum = 0) noexcept = 0;
-
-				/// Sets an exclusive font for the column
-				virtual void typeface(const paint::font& column_font) = 0;
-
-				/// Returns a font
-				virtual paint::font typeface() const noexcept = 0;
-
-				/// Determines the visibility state of the column
-				/**
-				 * @return true if the column is visible, false otherwise
-				 */
-				virtual bool visible() const noexcept = 0;
-
-				/// Sets the visibility state of the column
-				/**
-				 * @param is_visible Indicates whether to show or hide the column
-				 */
-				virtual void visible(bool is_visible) noexcept = 0;
-			};
-
-			class const_virtual_pointer
-			{
-				struct intern
-				{
-				public:
-					virtual ~intern() noexcept = default;
-				};
-
-				template<typename T>
-				struct real_pointer
-					: public intern
-				{
-					const T * ptr;
-
-					real_pointer(const T* p) noexcept
-						: ptr(p)
-					{}
-				};
-
-				const_virtual_pointer(const const_virtual_pointer&) = delete;
-				const_virtual_pointer& operator=(const const_virtual_pointer&) = delete;
-
-				const_virtual_pointer(const_virtual_pointer&&) = delete;
-				const_virtual_pointer& operator=(const_virtual_pointer&&) = delete;
-			public:
-				template<typename Type>
-				explicit const_virtual_pointer(const Type* p)
-					: intern_(new real_pointer<Type>{p})
-				{
-				}
-
-				~const_virtual_pointer() noexcept
-				{
-					delete intern_;
-				}
-
-				template<typename Type>
-				const typename std::remove_const<Type>::type *get() const noexcept
-				{
-					using value_type = typename std::remove_const<Type>::type;
-					auto target = dynamic_cast<real_pointer<value_type>*>(intern_);
-					return (target ? target->ptr : nullptr);
-				}
-			private:
-				intern * intern_;
-			};
-
-			struct cell
-			{
-				struct format
-				{
-					::nana::color bgcolor;
-					::nana::color fgcolor;
-
-					format() noexcept = default;
-					format(const ::nana::color& bgcolor, const ::nana::color& fgcolor) noexcept;
-				};
-
-				using format_ptr = ::std::unique_ptr<format>;
-
-				::std::string	text;
-				format_ptr	custom_format;
-
-				cell() = default;
-				cell(const cell&);
-				cell(cell&&) noexcept;
-				cell(::std::string) noexcept;
-				cell(::std::string, const format&);
+			/// Sets the caption of column
+			/**
+				* @param text_utf8 A UTF-8 string for the caption.
+				*/
+			virtual void text(std::string text_utf8) = 0;
 
 #ifdef __cpp_char8_t
-				cell(::std::u8string_view);
-				cell(::std::u8string_view, const format&);
+			virtual void text(std::u8string_view text) = 0;
 #endif
-				cell& operator=(const cell&);
-				cell& operator=(cell&&) noexcept;
-			};
+			/// Sets alignment of column text
+			/**
+				* @param align Alignment
+				*/
+			virtual void text_align(::nana::align align) noexcept = 0;
 
-			class container_interface
+			/// Adjusts the width to fit the content
+			/**
+				* The priority of max: maximum, ranged width, scheme's max_fit_content.
+				* @param maximum Sets the width of column to the maximum if the width of content is larger than maximum
+				*/
+			virtual void fit_content(unsigned maximum = 0) noexcept = 0;
+
+			/// Sets an exclusive font for the column
+			virtual void typeface(const paint::font& column_font) = 0;
+
+			/// Returns a font
+			virtual paint::font typeface() const noexcept = 0;
+
+			/// Determines the visibility state of the column
+			/**
+				* @return true if the column is visible, false otherwise
+				*/
+			virtual bool visible() const noexcept = 0;
+
+			/// Sets the visibility state of the column
+			/**
+				* @param is_visible Indicates whether to show or hide the column
+				*/
+			virtual void visible(bool is_visible) noexcept = 0;
+		};
+
+		class const_virtual_pointer
+		{
+			struct intern
 			{
-				friend class model_guard;
 			public:
-				virtual ~container_interface() = default;
-
-				virtual void clear() = 0;
-				virtual void erase(std::size_t pos) = 0;
-
-				virtual std::size_t size() const = 0;
-				virtual bool immutable() const = 0;
-
-				virtual void emplace(std::size_t pos) = 0;
-				virtual void emplace_back() = 0;
-
-				virtual void assign(std::size_t pos, const std::vector<cell>& cells) = 0;
-				virtual std::vector<cell> to_cells(std::size_t pos) const = 0;
-
-				virtual bool push_back(const const_virtual_pointer&) = 0;
-
-				virtual void * pointer() = 0;
-				virtual const void* pointer() const = 0;
+				virtual ~intern() noexcept = default;
 			};
 
-			template<typename Value>
-			struct container_translator
+			template<typename T>
+			struct real_pointer
+				: public intern
 			{
-				using value_translator = std::function<Value(const std::vector<cell>& cells)>;
-				using cell_translator = std::function<std::vector<cell>(const Value&)>;
+				const T * ptr;
 
-				value_translator	to_value;
-				cell_translator		to_cell;
-			};
-
-			template<typename STLContainer>
-			class basic_container
-				: public container_interface
-			{
-			};
-
-			template<typename STLContainer>
-			class standalone_container
-				: public basic_container<STLContainer>
-			{
-				using value_type = typename STLContainer::value_type;
-				using value_translator = typename container_translator<value_type>::value_translator;
-				using cell_translator = typename container_translator<value_type>::cell_translator;
-			public:
-				standalone_container(STLContainer&& cont, value_translator vtrans, cell_translator ctrans)
-					:	container_(std::move(cont)),
-						translator_({ vtrans, ctrans })
+				real_pointer(const T* p) noexcept
+					: ptr(p)
 				{}
+			};
 
-				standalone_container(const STLContainer& cont, value_translator vtrans, cell_translator ctrans)
-					:	container_(cont),
-						translator_({ vtrans, ctrans })
-				{}
-			private:
-				void clear() override
-				{
-					container_.clear();
-				}
+			const_virtual_pointer(const const_virtual_pointer&) = delete;
+			const_virtual_pointer& operator=(const const_virtual_pointer&) = delete;
 
-				void erase(std::size_t pos) override
-				{
-					auto i = container_.begin();
-					std::advance(i, pos);
-					container_.erase(i);
-				}
+			const_virtual_pointer(const_virtual_pointer&&) = delete;
+			const_virtual_pointer& operator=(const_virtual_pointer&&) = delete;
+		public:
+			template<typename Type>
+			explicit const_virtual_pointer(const Type* p)
+				: intern_(new real_pointer<Type>{p})
+			{
+			}
 
-				std::size_t size() const override
-				{
-					return container_.size();
-				}
+			~const_virtual_pointer() noexcept
+			{
+				delete intern_;
+			}
 
-				bool immutable() const override
-				{
-					return false;
-				}
+			template<typename Type>
+			const typename std::remove_const<Type>::type *get() const noexcept
+			{
+				using value_type = typename std::remove_const<Type>::type;
+				auto target = dynamic_cast<real_pointer<value_type>*>(intern_);
+				return (target ? target->ptr : nullptr);
+			}
+		private:
+			intern * intern_;
+		};
 
-				void emplace(std::size_t pos) override
-				{
-					auto i = container_.begin();
-					std::advance(i, pos);
+		struct cell
+		{
+			struct format
+			{
+				::nana::color bgcolor;
+				::nana::color fgcolor;
 
-					container_.emplace(i);
-				}
+				format() noexcept = default;
+				format(const ::nana::color& bgcolor, const ::nana::color& fgcolor) noexcept;
+			};
 
-				void emplace_back() override
-				{
-					container_.emplace_back();
-				}
+			using format_ptr = ::std::unique_ptr<format>;
+
+			::std::string	text;
+			format_ptr	custom_format;
+
+			cell() = default;
+			cell(const cell&);
+			cell(cell&&) noexcept;
+			cell(::std::string) noexcept;
+			cell(::std::string, const format&);
+
+#ifdef __cpp_char8_t
+			cell(::std::u8string_view);
+			cell(::std::u8string_view, const format&);
+#endif
+			cell& operator=(const cell&);
+			cell& operator=(cell&&) noexcept;
+		};
+
+		class container_interface
+		{
+			friend class model_guard;
+		public:
+			virtual ~container_interface() = default;
+
+			virtual void clear() = 0;
+			virtual void erase(std::size_t pos) = 0;
+
+			virtual std::size_t size() const = 0;
+			virtual bool immutable() const = 0;
+
+			virtual void emplace(std::size_t pos) = 0;
+			virtual void emplace_back() = 0;
+
+			virtual void assign(std::size_t pos, const std::vector<cell>& cells) = 0;
+			virtual std::vector<cell> to_cells(std::size_t pos) const = 0;
+
+			virtual bool push_back(const const_virtual_pointer&) = 0;
+
+			virtual void * pointer() = 0;
+			virtual const void* pointer() const = 0;
+		};
+
+		template<typename Value>
+		struct container_translator
+		{
+			using value_translator = std::function<Value(const std::vector<cell>& cells)>;
+			using cell_translator = std::function<std::vector<cell>(const Value&)>;
+
+			value_translator	to_value;
+			cell_translator		to_cell;
+		};
+
+		template<typename STLContainer>
+		class basic_container
+			: public container_interface
+		{
+		};
+
+		template<typename STLContainer>
+		class standalone_container
+			: public basic_container<STLContainer>
+		{
+			using value_type = typename STLContainer::value_type;
+			using value_translator = typename container_translator<value_type>::value_translator;
+			using cell_translator = typename container_translator<value_type>::cell_translator;
+		public:
+			standalone_container(STLContainer&& cont, value_translator vtrans, cell_translator ctrans)
+				:	container_(std::move(cont)),
+					translator_({ vtrans, ctrans })
+			{}
+
+			standalone_container(const STLContainer& cont, value_translator vtrans, cell_translator ctrans)
+				:	container_(cont),
+					translator_({ vtrans, ctrans })
+			{}
+		private:
+			void clear() override
+			{
+				container_.clear();
+			}
+
+			void erase(std::size_t pos) override
+			{
+				auto i = container_.begin();
+				std::advance(i, pos);
+				container_.erase(i);
+			}
+
+			std::size_t size() const override
+			{
+				return container_.size();
+			}
+
+			bool immutable() const override
+			{
+				return false;
+			}
+
+			void emplace(std::size_t pos) override
+			{
+				auto i = container_.begin();
+				std::advance(i, pos);
+
+				container_.emplace(i);
+			}
+
+			void emplace_back() override
+			{
+				container_.emplace_back();
+			}
 			
-				void assign(std::size_t pos, const std::vector<cell>& cells) override
-				{
-					container_.at(pos) = translator_.to_value(cells);
-				}
-
-				std::vector<cell> to_cells(std::size_t pos) const override
-				{
-					return translator_.to_cell(container_.at(pos));
-				}
-
-				bool push_back(const const_virtual_pointer& dptr) override
-				{
-					auto value = dptr.get<value_type>();
-					if (value)
-					{
-						container_.push_back(*value);
-						return true;
-					}
-					return false;
-				}
-
-				void* pointer() override
-				{
-					return &container_;
-				}
-
-				const void* pointer() const override
-				{
-					return &container_;
-				}
-			private:
-				STLContainer container_;
-				container_translator<value_type> translator_;
-			};
-
-
-			template<typename STLContainer>
-			class shared_container
-				: public basic_container<STLContainer>
+			void assign(std::size_t pos, const std::vector<cell>& cells) override
 			{
-				using value_type = typename STLContainer::value_type;
-				using value_translator = typename container_translator<value_type>::value_translator;
-				using cell_translator = typename container_translator<value_type>::cell_translator;
+				container_.at(pos) = translator_.to_value(cells);
+			}
 
-			public:
-				using container_reference = STLContainer&;
-
-				
-				shared_container(container_reference cont, value_translator vtrans, cell_translator ctrans)
-					: container_(cont), translator_({ vtrans, ctrans })
-				{
-					
-				}
-			private:
-				void clear() override
-				{
-					container_.clear();
-				}
-
-				void erase(std::size_t pos) override
-				{
-					auto i = container_.begin();
-					std::advance(i, pos);
-					container_.erase(i);
-				}
-
-				std::size_t size() const override
-				{
-					return container_.size();
-				}
-
-				bool immutable() const override
-				{
-					return false;
-				}
-
-				void emplace(std::size_t pos) override
-				{
-					auto i = container_.begin();
-					std::advance(i, pos);
-
-					container_.emplace(i);
-				}
-
-				void emplace_back() override
-				{
-					container_.emplace_back();
-				}
-
-				void assign(std::size_t pos, const std::vector<cell>& cells) override
-				{
-					container_.at(pos) = translator_.to_value(cells);
-				}
-
-				std::vector<cell> to_cells(std::size_t pos) const override
-				{
-					return translator_.to_cell(container_.at(pos));
-				}
-
-				bool push_back(const const_virtual_pointer& dptr) override
-				{
-					auto value = dptr.get<value_type>();
-					if (value)
-					{
-						container_.push_back(*value);
-						return true;
-					}
-					return false;
-				}
-
-				void* pointer() override
-				{
-					return &container_;
-				}
-
-				const void* pointer() const override
-				{
-					return &container_;
-				}
-			private:
-				container_reference container_;
-				container_translator<value_type> translator_;
-			};
-
-			template<typename STLContainer>
-			class shared_immutable_container
-				: public basic_container<STLContainer>
+			std::vector<cell> to_cells(std::size_t pos) const override
 			{
-				using value_type = typename STLContainer::value_type;
-				using cell_translator = typename container_translator<value_type>::cell_translator;
+				return translator_.to_cell(container_.at(pos));
+			}
 
-
-			public:
-				using container_reference = const STLContainer&;
-
-
-				shared_immutable_container(container_reference cont, cell_translator ctrans)
-					: container_(cont), ctrans_(ctrans)
+			bool push_back(const const_virtual_pointer& dptr) override
+			{
+				auto value = dptr.get<value_type>();
+				if (value)
 				{
-				}
-			private:
-				void clear() override
-				{
-					throw std::runtime_error("nana::listbox disallow to remove items because of immutable model");
-				}
-
-				void erase(std::size_t /*pos*/) override
-				{
-					throw std::runtime_error("nana::listbox disallow to remove items because of immutable model");
-				}
-
-				std::size_t size() const override
-				{
-					return container_.size();
-				}
-
-				bool immutable() const override
-				{
+					container_.push_back(*value);
 					return true;
 				}
+				return false;
+			}
 
-				void emplace(std::size_t /*pos*/) override
-				{
-					throw std::runtime_error("nana::listbox disallow to remove items because of immutable model");
-				}
-
-				void emplace_back() override
-				{
-					throw std::runtime_error("nana::listbox disallow to remove items because of immutable model");
-				}
-
-				void assign(std::size_t /*pos*/, const std::vector<cell>& /*cells*/) override
-				{
-					throw std::runtime_error("nana::listbox disallow to remove items because of immutable model");
-				}
-
-				std::vector<cell> to_cells(std::size_t pos) const override
-				{
-					return ctrans_(container_.at(pos));
-				}
-
-				bool push_back(const const_virtual_pointer& /*dptr*/) override
-				{
-					throw std::runtime_error("nana::listbox disallow to remove items because of immutable model");
-				}
-
-				void* pointer() override
-				{
-					return nullptr;
-				}
-
-				const void* pointer() const override
-				{
-					return &container_;
-				}
-			private:
-				container_reference container_;
-				cell_translator ctrans_;
-			};
-
-			class model_interface
+			void* pointer() override
 			{
-			public:
-				virtual ~model_interface() = default;
+				return &container_;
+			}
 
-				virtual void lock() = 0;
-				virtual void unlock() = 0;
-
-				virtual container_interface* container() noexcept = 0;
-				virtual const container_interface* container() const noexcept = 0;
-			};
-
-			class model_guard
+			const void* pointer() const override
 			{
-				model_guard(const model_guard&) = delete;
-				model_guard& operator=(const model_guard&) = delete;
-			public:
-				model_guard(model_interface* model)
-					: model_(model)
-				{
-					model->lock();
-				}
+				return &container_;
+			}
+		private:
+			STLContainer container_;
+			container_translator<value_type> translator_;
+		};
 
-				model_guard(model_guard&& other) noexcept
-					: model_(other.model_)
-				{
-					other.model_ = nullptr;
-				}
 
-				~model_guard() noexcept
+		template<typename STLContainer>
+		class shared_container
+			: public basic_container<STLContainer>
+		{
+			using value_type = typename STLContainer::value_type;
+			using value_translator = typename container_translator<value_type>::value_translator;
+			using cell_translator = typename container_translator<value_type>::cell_translator;
+
+		public:
+			using container_reference = STLContainer&;
+
+				
+			shared_container(container_reference cont, value_translator vtrans, cell_translator ctrans)
+				: container_(cont), translator_({ vtrans, ctrans })
+			{
+					
+			}
+		private:
+			void clear() override
+			{
+				container_.clear();
+			}
+
+			void erase(std::size_t pos) override
+			{
+				auto i = container_.begin();
+				std::advance(i, pos);
+				container_.erase(i);
+			}
+
+			std::size_t size() const override
+			{
+				return container_.size();
+			}
+
+			bool immutable() const override
+			{
+				return false;
+			}
+
+			void emplace(std::size_t pos) override
+			{
+				auto i = container_.begin();
+				std::advance(i, pos);
+
+				container_.emplace(i);
+			}
+
+			void emplace_back() override
+			{
+				container_.emplace_back();
+			}
+
+			void assign(std::size_t pos, const std::vector<cell>& cells) override
+			{
+				container_.at(pos) = translator_.to_value(cells);
+			}
+
+			std::vector<cell> to_cells(std::size_t pos) const override
+			{
+				return translator_.to_cell(container_.at(pos));
+			}
+
+			bool push_back(const const_virtual_pointer& dptr) override
+			{
+				auto value = dptr.get<value_type>();
+				if (value)
+				{
+					container_.push_back(*value);
+					return true;
+				}
+				return false;
+			}
+
+			void* pointer() override
+			{
+				return &container_;
+			}
+
+			const void* pointer() const override
+			{
+				return &container_;
+			}
+		private:
+			container_reference container_;
+			container_translator<value_type> translator_;
+		};
+
+		template<typename STLContainer>
+		class shared_immutable_container
+			: public basic_container<STLContainer>
+		{
+			using value_type = typename STLContainer::value_type;
+			using cell_translator = typename container_translator<value_type>::cell_translator;
+
+
+		public:
+			using container_reference = const STLContainer&;
+
+
+			shared_immutable_container(container_reference cont, cell_translator ctrans)
+				: container_(cont), ctrans_(ctrans)
+			{
+			}
+		private:
+			void clear() override
+			{
+				throw std::runtime_error("nana::listbox disallow to remove items because of immutable model");
+			}
+
+			void erase(std::size_t /*pos*/) override
+			{
+				throw std::runtime_error("nana::listbox disallow to remove items because of immutable model");
+			}
+
+			std::size_t size() const override
+			{
+				return container_.size();
+			}
+
+			bool immutable() const override
+			{
+				return true;
+			}
+
+			void emplace(std::size_t /*pos*/) override
+			{
+				throw std::runtime_error("nana::listbox disallow to remove items because of immutable model");
+			}
+
+			void emplace_back() override
+			{
+				throw std::runtime_error("nana::listbox disallow to remove items because of immutable model");
+			}
+
+			void assign(std::size_t /*pos*/, const std::vector<cell>& /*cells*/) override
+			{
+				throw std::runtime_error("nana::listbox disallow to remove items because of immutable model");
+			}
+
+			std::vector<cell> to_cells(std::size_t pos) const override
+			{
+				return ctrans_(container_.at(pos));
+			}
+
+			bool push_back(const const_virtual_pointer& /*dptr*/) override
+			{
+				throw std::runtime_error("nana::listbox disallow to remove items because of immutable model");
+			}
+
+			void* pointer() override
+			{
+				return nullptr;
+			}
+
+			const void* pointer() const override
+			{
+				return &container_;
+			}
+		private:
+			container_reference container_;
+			cell_translator ctrans_;
+		};
+
+		class model_interface
+		{
+		public:
+			virtual ~model_interface() = default;
+
+			virtual void lock() = 0;
+			virtual void unlock() = 0;
+
+			virtual container_interface* container() noexcept = 0;
+			virtual const container_interface* container() const noexcept = 0;
+		};
+
+		class model_guard
+		{
+			model_guard(const model_guard&) = delete;
+			model_guard& operator=(const model_guard&) = delete;
+		public:
+			model_guard(model_interface* model)
+				: model_(model)
+			{
+				model->lock();
+			}
+
+			model_guard(model_guard&& other) noexcept
+				: model_(other.model_)
+			{
+				other.model_ = nullptr;
+			}
+
+			~model_guard() noexcept
+			{
+				if (model_)
+					model_->unlock();
+			}
+
+			model_guard& operator=(model_guard&& other)
+			{
+				if (this != &other)
 				{
 					if (model_)
 						model_->unlock();
+
+					model_ = other.model_;
+					other.model_ = nullptr;
 				}
+				return *this;
+			}
 
-				model_guard& operator=(model_guard&& other)
-				{
-					if (this != &other)
-					{
-						if (model_)
-							model_->unlock();
-
-						model_ = other.model_;
-						other.model_ = nullptr;
-					}
-					return *this;
-				}
-
-				template<typename STLContainer>
-				STLContainer& container()
-				{
-					using stlcontainer = typename std::decay<STLContainer>::type;
-
-					if (!model_)
-						throw std::runtime_error("nana::listbox empty model_guard");
-
-					using type = basic_container<stlcontainer>;
-					auto p = dynamic_cast<type*>(model_->container());
-					if (nullptr == p)
-						throw std::invalid_argument("invalid listbox model container type");
-
-					if (nullptr == p->pointer())
-						throw std::runtime_error("the modal is immutable, please declare model_guard with const");
-
-					return *static_cast<stlcontainer*>(p->pointer());
-				}
-
-				template<typename STLContainer>
-				const STLContainer& container() const
-				{
-					using stlcontainer = typename std::decay<STLContainer>::type;
-
-					if (!model_)
-						throw std::runtime_error("nana::listbox empty model_guard");
-
-					using type = basic_container<stlcontainer>;
-					auto p = dynamic_cast<const type*>(model_->container());
-					if (nullptr == p)
-						throw std::invalid_argument("invalid listbox model container type");
-
-					return *static_cast<const stlcontainer*>(p->pointer());
-				}
-			private:
-				model_interface* model_;
-			};
-
-			template<typename STLContainer, typename Mutex>
-			class standalone_model_container
-				: public model_interface
+			template<typename STLContainer>
+			STLContainer& container()
 			{
-			public:
-				using value_translator = typename container_translator<typename STLContainer::value_type>::value_translator;
-				using cell_translator = typename container_translator<typename STLContainer::value_type>::cell_translator;
+				using stlcontainer = typename std::decay<STLContainer>::type;
 
-				standalone_model_container(STLContainer&& container, value_translator vtrans, cell_translator ctrans)
-					: container_(std::move(container), std::move(vtrans), std::move(ctrans))
-				{
-				}
+				if (!model_)
+					throw std::runtime_error("nana::listbox empty model_guard");
 
-				standalone_model_container(const STLContainer& container, value_translator vtrans, cell_translator ctrans)
-					: container_(container, std::move(vtrans), std::move(ctrans))
-				{
-				}
+				using type = basic_container<stlcontainer>;
+				auto p = dynamic_cast<type*>(model_->container());
+				if (nullptr == p)
+					throw std::invalid_argument("invalid listbox model container type");
 
-				void lock() override
-				{
-					mutex_.lock();
-				}
+				if (nullptr == p->pointer())
+					throw std::runtime_error("the modal is immutable, please declare model_guard with const");
 
-				void unlock() override
-				{
-					mutex_.unlock();
-				}
+				return *static_cast<stlcontainer*>(p->pointer());
+			}
 
-				container_interface* container() noexcept override
-				{
-					return &container_;
-				}
-
-				const container_interface* container() const noexcept override
-				{
-					return &container_;
-				}
-			private:
-				Mutex mutex_;
-				standalone_container<STLContainer> container_;
-			};
-
-			template<typename STLContainer, typename Mutex>
-			class shared_model_container
-				: public model_interface
+			template<typename STLContainer>
+			const STLContainer& container() const
 			{
-			public:
-				using value_translator = typename container_translator<typename STLContainer::value_type>::value_translator;
-				using cell_translator = typename container_translator<typename STLContainer::value_type>::cell_translator;
+				using stlcontainer = typename std::decay<STLContainer>::type;
 
-				shared_model_container(STLContainer& container, value_translator vtrans, cell_translator ctrans)
-					: container_ptr_(new shared_container<STLContainer>(container, std::move(vtrans), std::move(ctrans)))
-				{
-				}
+				if (!model_)
+					throw std::runtime_error("nana::listbox empty model_guard");
 
-				shared_model_container(const STLContainer& container, cell_translator ctrans)
-					: container_ptr_(new shared_immutable_container<STLContainer>(container, std::move(ctrans)))
-				{
-				}
+				using type = basic_container<stlcontainer>;
+				auto p = dynamic_cast<const type*>(model_->container());
+				if (nullptr == p)
+					throw std::invalid_argument("invalid listbox model container type");
 
-				void lock() override
-				{
-					mutex_.lock();
-				}
+				return *static_cast<const stlcontainer*>(p->pointer());
+			}
+		private:
+			model_interface* model_;
+		};
 
-				void unlock() override
-				{
-					mutex_.unlock();
-				}
+		template<typename STLContainer, typename Mutex>
+		class standalone_model_container
+			: public model_interface
+		{
+		public:
+			using value_translator = typename container_translator<typename STLContainer::value_type>::value_translator;
+			using cell_translator = typename container_translator<typename STLContainer::value_type>::cell_translator;
 
-				container_interface* container() noexcept override
-				{
-					return container_ptr_.get();
-				}
-
-				const container_interface* container() const noexcept override
-				{
-					return container_ptr_.get();
-				}
-			private:
-				Mutex mutex_;
-				std::unique_ptr<container_interface> container_ptr_;
-			};
-
-
-			/// useful for both absolute and display (sorted) positions
-			struct index_pair
+			standalone_model_container(STLContainer&& container, value_translator vtrans, cell_translator ctrans)
+				: container_(std::move(container), std::move(vtrans), std::move(ctrans))
 			{
-				constexpr static const size_type npos = ::nana::npos;
+			}
 
-				size_type cat;	//The pos of category
-				size_type item;	//the pos of item in a category.
-
-				explicit index_pair(size_type cat_pos = 0, size_type item_pos = 0) noexcept
-					: cat(cat_pos), item(item_pos)
-				{}
-
-				bool empty() const noexcept
-				{
-					return (npos == cat);
-				}
-
-				void set_both(size_type n) noexcept
-				{
-					cat = item = n;
-				}
-
-				bool is_category() const noexcept
-				{
-					return (npos != cat && npos == item);
-				}
-
-				bool operator==(const index_pair& r) const noexcept
-				{
-					return (r.cat == cat && r.item == item);
-				}
-
-				bool operator!=(const index_pair& r) const noexcept
-				{
-					return !this->operator==(r);
-				}
-
-				bool operator<(const index_pair& r) const noexcept
-				{
-					return (cat < r.cat) || ((cat == r.cat) && (r.item != npos) && ((item == npos) || (item < r.item)));
-				}
-
-				bool operator>(const index_pair& r) const noexcept
-				{
-					return (cat > r.cat) || ((cat == r.cat) && (item != npos) && ((r.item == npos) || (item > r.item)));
-				}
-			};
-
-			using index_pairs = ::std::vector<index_pair>;
-
-			enum class inline_widget_status{
-				checked,
-				checking,
-				selected,
-				selecting
-			};
-
-			using inline_notifier_interface = detail::inline_widget_notifier_interface<index_pair, inline_widget_status, ::std::string>;
-
-			// struct essence
-			//@brief:	this struct gives many data for listbox,
-			//			the state of the struct does not effect on member functions, therefore all data members are public.
-			struct essence;
-
-			class oresolver
+			standalone_model_container(const STLContainer& container, value_translator vtrans, cell_translator ctrans)
+				: container_(container, std::move(vtrans), std::move(ctrans))
 			{
-			public:
-				oresolver(essence*) noexcept;
-				oresolver& operator<<(bool);
-				oresolver& operator<<(short);
-				oresolver& operator<<(unsigned short);
-				oresolver& operator<<(int);
-				oresolver& operator<<(unsigned int);
-				oresolver& operator<<(long);
-				oresolver& operator<<(unsigned long);
-				oresolver& operator<<(long long);
-				oresolver& operator<<(unsigned long long);
-				oresolver& operator<<(float);
-				oresolver& operator<<(double);
-				oresolver& operator<<(long double);
+			}
 
-				oresolver& operator<<(const char* text_utf8);
-				oresolver& operator<<(const wchar_t*);
-				oresolver& operator<<(const std::string& text_utf8);
-				oresolver& operator<<(const std::wstring&);
-				oresolver& operator<<(std::wstring&&);
-				oresolver& operator<<(cell);
-				oresolver& operator<<(std::nullptr_t);
-
-				std::vector<cell> && move_cells() noexcept;
-
-				::nana::listbox& listbox() noexcept;
-			private:
-				essence* const ess_;
-				std::vector<cell> cells_;
-			};
-
-			class iresolver
+			void lock() override
 			{
-			public:
-				iresolver(std::vector<cell>) noexcept;
+				mutex_.lock();
+			}
 
-				iresolver& operator>>(bool&);
-				iresolver& operator>>(short&);
-				iresolver& operator>>(unsigned short&);
-				iresolver& operator>>(int&);
-				iresolver& operator>>(unsigned int&);
-				iresolver& operator>>(long&);
-				iresolver& operator>>(unsigned long&);
-				iresolver& operator>>(long long&);
-				iresolver& operator>>(unsigned long long&);
-				iresolver& operator>>(float&);
-				iresolver& operator>>(double&);
-				iresolver& operator>>(long double&);
-
-				iresolver& operator>>(std::string& text_utf8);
-				iresolver& operator>>(std::wstring&);
-				iresolver& operator>>(cell&);
-				iresolver& operator>>(std::nullptr_t) noexcept;
-			private:
-				std::vector<cell> cells_;
-				std::size_t pos_{0};
-			};
-
-
-			struct category_t;
-			class drawer_header_impl;
-			class drawer_lister_impl;
-
-			/// mostly works on display positions
-			class trigger: public drawer_trigger
+			void unlock() override
 			{
-			public:
-				trigger();
-				~trigger();
-				essence& ess() const noexcept;
-			private:
-				void attached(widget_reference, graph_reference)	override;
-				void detached()	override;
-				void typeface_changed(graph_reference)	override;
-				void refresh(graph_reference)	override;
-				void mouse_move(graph_reference, const arg_mouse&)	override;
-				void mouse_leave(graph_reference, const arg_mouse&)	override;
-				void mouse_down(graph_reference, const arg_mouse&)	override;
-				void mouse_up(graph_reference, const arg_mouse&)	override;
-				void dbl_click(graph_reference, const arg_mouse&)	override;
-				void resized(graph_reference, const arg_resized&)		override;
-				void key_press(graph_reference, const arg_keyboard&)	override;
-				void key_char(graph_reference, const arg_keyboard&)	override;
-			private:
-				essence * essence_;
-				drawer_header_impl *drawer_header_;
-				drawer_lister_impl *drawer_lister_;
-			};//end class trigger
+				mutex_.unlock();
+			}
 
-			/// operate with absolute positions and contain only the position but maintain pointers to parts of the real items 
-			/// item_proxy self, it references and iterators are not invalidated by sort()
-			class item_proxy
-				: public ::nana::widgets::detail::widget_iterator<std::input_iterator_tag, item_proxy>
+			container_interface* container() noexcept override
 			{
-			public:
-				item_proxy(essence*, const index_pair& = index_pair{npos, npos});
-				item_proxy(const item_proxy&) = default;
+				return &container_;
+			}
 
-				/// the main purpose of this it to make obvious that item_proxy operate with absolute positions, and don't get moved during sort()
-				static item_proxy from_display(essence *, const index_pair &relative) ;
-				item_proxy from_display(const index_pair &relative) const;
+			const container_interface* container() const noexcept override
+			{
+				return &container_;
+			}
+		private:
+			Mutex mutex_;
+			standalone_container<STLContainer> container_;
+		};
 
-				/// possible use: last_selected_display = last_selected.to_display().item; use with caution, it get invalidated after a sort()
-				index_pair to_display() const;
+		template<typename STLContainer, typename Mutex>
+		class shared_model_container
+			: public model_interface
+		{
+		public:
+			using value_translator = typename container_translator<typename STLContainer::value_type>::value_translator;
+			using cell_translator = typename container_translator<typename STLContainer::value_type>::cell_translator;
 
-				/// Determines whether the item is displayed on the screen
-				bool displayed() const;
+			shared_model_container(STLContainer& container, value_translator vtrans, cell_translator ctrans)
+				: container_ptr_(new shared_container<STLContainer>(container, std::move(vtrans), std::move(ctrans)))
+			{
+			}
 
-				/// Determines whether the item_proxy refers to invalid item.
-				/**
-				 * @return true if the item_proxy refers to an invalid item, false otherwise.
-				 */
-				bool empty() const noexcept;
+			shared_model_container(const STLContainer& container, cell_translator ctrans)
+				: container_ptr_(new shared_immutable_container<STLContainer>(container, std::move(ctrans)))
+			{
+			}
 
-				/// Checks/unchecks the item
-				/**
-				* @param chk Indicates whether to check or uncheck the item
+			void lock() override
+			{
+				mutex_.lock();
+			}
+
+			void unlock() override
+			{
+				mutex_.unlock();
+			}
+
+			container_interface* container() noexcept override
+			{
+				return container_ptr_.get();
+			}
+
+			const container_interface* container() const noexcept override
+			{
+				return container_ptr_.get();
+			}
+		private:
+			Mutex mutex_;
+			std::unique_ptr<container_interface> container_ptr_;
+		};
+
+
+		/// useful for both absolute and display (sorted) positions
+		struct index_pair
+		{
+			constexpr static const size_type npos = ::nana::npos;
+
+			size_type cat;	//The pos of category
+			size_type item;	//the pos of item in a category.
+
+			explicit index_pair(size_type cat_pos = 0, size_type item_pos = 0) noexcept
+				: cat(cat_pos), item(item_pos)
+			{}
+
+			bool empty() const noexcept
+			{
+				return (npos == cat);
+			}
+
+			void set_both(size_type n) noexcept
+			{
+				cat = item = n;
+			}
+
+			bool is_category() const noexcept
+			{
+				return (npos != cat && npos == item);
+			}
+
+			bool operator==(const index_pair& r) const noexcept
+			{
+				return (r.cat == cat && r.item == item);
+			}
+
+			bool operator!=(const index_pair& r) const noexcept
+			{
+				return !this->operator==(r);
+			}
+
+			bool operator<(const index_pair& r) const noexcept
+			{
+				return (cat < r.cat) || ((cat == r.cat) && (r.item != npos) && ((item == npos) || (item < r.item)));
+			}
+
+			bool operator>(const index_pair& r) const noexcept
+			{
+				return (cat > r.cat) || ((cat == r.cat) && (item != npos) && ((r.item == npos) || (item > r.item)));
+			}
+		};
+
+		using index_pairs = ::std::vector<index_pair>;
+
+		enum class inline_widget_status{
+			checked,
+			checking,
+			selected,
+			selecting
+		};
+
+		using inline_notifier_interface = detail::inline_widget_notifier_interface<index_pair, inline_widget_status, ::std::string>;
+
+		// struct essence
+		//@brief:	this struct gives many data for listbox,
+		//			the state of the struct does not effect on member functions, therefore all data members are public.
+		struct essence;
+
+		class oresolver
+		{
+		public:
+			oresolver(essence*) noexcept;
+			oresolver& operator<<(bool);
+			oresolver& operator<<(short);
+			oresolver& operator<<(unsigned short);
+			oresolver& operator<<(int);
+			oresolver& operator<<(unsigned int);
+			oresolver& operator<<(long);
+			oresolver& operator<<(unsigned long);
+			oresolver& operator<<(long long);
+			oresolver& operator<<(unsigned long long);
+			oresolver& operator<<(float);
+			oresolver& operator<<(double);
+			oresolver& operator<<(long double);
+
+			oresolver& operator<<(const char* text_utf8);
+			oresolver& operator<<(const wchar_t*);
+			oresolver& operator<<(const std::string& text_utf8);
+			oresolver& operator<<(const std::wstring&);
+			oresolver& operator<<(std::wstring&&);
+			oresolver& operator<<(cell);
+			oresolver& operator<<(std::nullptr_t);
+
+			std::vector<cell> && move_cells() noexcept;
+
+			::nana::listbox& listbox() noexcept;
+		private:
+			essence* const ess_;
+			std::vector<cell> cells_;
+		};
+
+		class iresolver
+		{
+		public:
+			iresolver(std::vector<cell>) noexcept;
+
+			iresolver& operator>>(bool&);
+			iresolver& operator>>(short&);
+			iresolver& operator>>(unsigned short&);
+			iresolver& operator>>(int&);
+			iresolver& operator>>(unsigned int&);
+			iresolver& operator>>(long&);
+			iresolver& operator>>(unsigned long&);
+			iresolver& operator>>(long long&);
+			iresolver& operator>>(unsigned long long&);
+			iresolver& operator>>(float&);
+			iresolver& operator>>(double&);
+			iresolver& operator>>(long double&);
+
+			iresolver& operator>>(std::string& text_utf8);
+			iresolver& operator>>(std::wstring&);
+			iresolver& operator>>(cell&);
+			iresolver& operator>>(std::nullptr_t) noexcept;
+		private:
+			std::vector<cell> cells_;
+			std::size_t pos_{0};
+		};
+
+
+		struct category_t;
+		class drawer_header_impl;
+		class drawer_lister_impl;
+
+		/// mostly works on display positions
+		class trigger: public drawer_trigger
+		{
+		public:
+			trigger();
+			~trigger();
+			essence& ess() const noexcept;
+		private:
+			void attached(widget_reference, graph_reference)	override;
+			void detached()	override;
+			void typeface_changed(graph_reference)	override;
+			void refresh(graph_reference)	override;
+			void mouse_move(graph_reference, const arg_mouse&)	override;
+			void mouse_leave(graph_reference, const arg_mouse&)	override;
+			void mouse_down(graph_reference, const arg_mouse&)	override;
+			void mouse_up(graph_reference, const arg_mouse&)	override;
+			void dbl_click(graph_reference, const arg_mouse&)	override;
+			void resized(graph_reference, const arg_resized&)		override;
+			void key_press(graph_reference, const arg_keyboard&)	override;
+			void key_char(graph_reference, const arg_keyboard&)	override;
+		private:
+			essence * essence_;
+			drawer_header_impl *drawer_header_;
+			drawer_lister_impl *drawer_lister_;
+		};//end class trigger
+
+		/// operate with absolute positions and contain only the position but maintain pointers to parts of the real items 
+		/// item_proxy self, it references and iterators are not invalidated by sort()
+		class item_proxy
+			: public ::nana::widgets::detail::widget_iterator<std::input_iterator_tag, item_proxy>
+		{
+		public:
+			item_proxy(essence*, const index_pair& = index_pair{npos, npos});
+			item_proxy(const item_proxy&) = default;
+
+			/// the main purpose of this it to make obvious that item_proxy operate with absolute positions, and don't get moved during sort()
+			static item_proxy from_display(essence *, const index_pair &relative) ;
+			item_proxy from_display(const index_pair &relative) const;
+
+			/// possible use: last_selected_display = last_selected.to_display().item; use with caution, it get invalidated after a sort()
+			index_pair to_display() const;
+
+			/// Determines whether the item is displayed on the screen
+			bool displayed() const;
+
+			/// Determines whether the item_proxy refers to invalid item.
+			/**
+				* @return true if the item_proxy refers to an invalid item, false otherwise.
+				*/
+			bool empty() const noexcept;
+
+			/// Checks/unchecks the item
+			/**
+			* @param chk Indicates whether to check or uncheck the item
+			* @param scroll_view Indicates whether to scroll the view to the item. It is ignored if the item is displayed.
+			* @return the reference of *this.
+			*/
+			item_proxy & check(bool chk, bool scroll_view = false);
+
+			/// Determines whether the item is checked
+			bool checked() const;
+
+			/// Selects/deselects the item
+			/**
+				* @param sel Indicates whether to select or deselect the item
 				* @param scroll_view Indicates whether to scroll the view to the item. It is ignored if the item is displayed.
 				* @return the reference of *this.
 				*/
-				item_proxy & check(bool chk, bool scroll_view = false);
+			item_proxy & select(bool sel, bool scroll_view = false);
 
-				/// Determines whether the item is checked
-				bool checked() const;
+			/// Determines whether he item is selected
+			bool selected() const;
 
-				/// Selects/deselects the item
-				/**
-				 * @param sel Indicates whether to select or deselect the item
-				 * @param scroll_view Indicates whether to scroll the view to the item. It is ignored if the item is displayed.
-				 * @return the reference of *this.
-				 */
-				item_proxy & select(bool sel, bool scroll_view = false);
+			item_proxy & bgcolor(const nana::color&);
+			nana::color bgcolor() const;
 
-				/// Determines whether he item is selected
-				bool selected() const;
+			item_proxy& fgcolor(const nana::color&);
+			nana::color fgcolor() const;
 
-				item_proxy & bgcolor(const nana::color&);
-				nana::color bgcolor() const;
+			index_pair pos() const noexcept;
 
-				item_proxy& fgcolor(const nana::color&);
-				nana::color fgcolor() const;
+			size_type columns() const noexcept;
 
-				index_pair pos() const noexcept;
+			/// Converts a position of column between display position and absolute position
+			/**
+				* @param col The display position or absolute position.
+				* @param disp_order Indicates whether the col is a display position or absolute position. If this parameter is true, the col is display position
+				* @return absolute position if disp_order is false, display position otherwise. 
+				*/
+			size_type column_cast(size_type col, bool disp_order) const;
 
-				size_type columns() const noexcept;
-
-				/// Converts a position of column between display position and absolute position
-				/**
-				 * @param col The display position or absolute position.
-				 * @param disp_order Indicates whether the col is a display position or absolute position. If this parameter is true, the col is display position
-				 * @return absolute position if disp_order is false, display position otherwise. 
-				 */
-				size_type column_cast(size_type col, bool disp_order) const;
-
-				item_proxy&		text(size_type abs_col, cell);
-				item_proxy&		text(size_type abs_col, std::string);
-				item_proxy&		text(size_type abs_col, const std::wstring&);
+			item_proxy&		text(size_type abs_col, cell);
+			item_proxy&		text(size_type abs_col, std::string);
+			item_proxy&		text(size_type abs_col, const std::wstring&);
 #ifdef __cpp_char8_t
-				item_proxy&		text(size_type abs_col, std::u8string_view);
+			item_proxy&		text(size_type abs_col, std::u8string_view);
 #endif
-				std::string	text(size_type abs_col) const;
+			std::string	text(size_type abs_col) const;
 
-				void icon(const nana::paint::image&);
+			void icon(const nana::paint::image&);
 
-				template<typename T>
-				item_proxy & resolve_from(const T& t)
+			template<typename T>
+			item_proxy & resolve_from(const T& t)
+			{
+				oresolver ores(_m_ess());
+				ores << t;
+				auto && cells = ores.move_cells();
+				auto cols = columns();
+				cells.resize(cols);
+				for (auto pos = 0u; pos < cols; ++pos)
 				{
-					oresolver ores(_m_ess());
-					ores << t;
-					auto && cells = ores.move_cells();
-					auto cols = columns();
-					cells.resize(cols);
-					for (auto pos = 0u; pos < cols; ++pos)
-					{
-						auto & el = cells[pos];
-						if (el.text.size() == 1 && el.text[0] == '\0')
-							continue;
-						text(pos, std::move(el));
-					}
+					auto & el = cells[pos];
+					if (el.text.size() == 1 && el.text[0] == '\0')
+						continue;
+					text(pos, std::move(el));
+				}
 					
-					return *this;
-				}
+				return *this;
+			}
 
-				template<typename T>
-				void resolve_to(T& t) const
-				{
-					iresolver ires(_m_cells());
-					ires >> t;
-				}
-
-				template<typename T>
-				T const * value_ptr() const
-				{
-					return std::any_cast<T>(_m_value());
-				}
-
-				template<typename T>
-				T & value() const
-				{
-					auto * pany = _m_value();
-					if(nullptr == pany)
-						throw std::runtime_error("listbox::item_proxy.value<T>() is empty");
-
-					auto p = std::any_cast<T>(_m_value());
-					if(nullptr == p)
-						throw std::runtime_error("listbox::item_proxy.value<T>() invalid type of value");
-					return *p;
-				}
-				template<typename T>
-				T & value() 
-				{
-					auto * pany = _m_value();
-					if (nullptr == pany)
-						throw std::runtime_error("listbox::item_proxy.value<T>() is empty");
-
-					auto p = std::any_cast<T>(_m_value(false));
-					if (nullptr == p)
-						throw std::runtime_error("listbox::item_proxy.value<T>() invalid type of value");
-					return *p;
-				}
-				template<typename T>
-				item_proxy & value(T&& t)
-				{
-					*_m_value(true) = ::std::forward<T>(t);
-					return *this;
-				}
-
-				/// Behavior of Iterator's value_type
-				bool operator==(::std::string_view sv) const;
-				bool operator==(::std::wstring_view sv) const;
-#ifdef __cpp_char8_t
-				bool operator==(::std::u8string_view sv) const;
-#endif
-				/// Behavior of Iterator
-				item_proxy & operator=(const item_proxy&);
-
-				/// Behavior of Iterator
-				item_proxy & operator++();
-
-				/// Behavior of Iterator
-				item_proxy	operator++(int);
-
-				/// Behavior of Iterator
-				item_proxy& operator*();
-
-				/// Behavior of Iterator
-				const item_proxy& operator*() const;
-
-				/// Behavior of Iterator
-				item_proxy* operator->();
-
-				/// Behavior of Iterator
-				const item_proxy* operator->() const;
-
-				/// Behavior of Iterator
-				bool operator==(const item_proxy&) const;
-
-				/// Behavior of Iterator
-				bool operator!=(const item_proxy&) const;
-
-				//Undocumented method
-				essence * _m_ess() const noexcept;
-			private:
-				std::vector<cell> _m_cells() const;
-				std::any		* _m_value(bool alloc_if_empty);
-				const std::any	* _m_value() const;
-			private:
-				essence * ess_;
-				category_t*	cat_{nullptr};
-
-				index_pair	pos_; //Position of an item, it never represents a category when item proxy is available.
-			};
-
-			class cat_proxy
-				: public ::nana::widgets::detail::widget_iterator<std::input_iterator_tag, cat_proxy>
+			template<typename T>
+			void resolve_to(T& t) const
 			{
-			public:
-				using inline_notifier_interface = drawerbase::listbox::inline_notifier_interface;
-				template<typename Value> using value_translator = typename container_translator<Value>::value_translator;
-				template<typename Value> using cell_translator = typename container_translator<Value>::cell_translator;
+				iresolver ires(_m_cells());
+				ires >> t;
+			}
 
-				cat_proxy() noexcept = default;
-				cat_proxy(const cat_proxy&) noexcept = default;
-				cat_proxy(essence*, size_type pos) noexcept;
-				cat_proxy(essence*, category_t*) noexcept;
+			template<typename T>
+			T const * value_ptr() const
+			{
+				return std::any_cast<T>(_m_value());
+			}
 
-				/// Append an item at the end of this category using the oresolver to generate the texts to be put in each column.
-                ///
-                /// First you have to make sure there is an overload of the operator<<() of the oresolver for the type of the object used here
-                /// If a listbox have a model set, try call append_model instead.
-                template<typename T>
-				item_proxy append(  T&& t,                  ///< Value used by the resolver to generate the texts to be put in each column of the item
-                                    bool set_value = false) ///< determines whether to set the object as the value of this item.
-				{
-					oresolver ores(ess_);
+			template<typename T>
+			T & value() const
+			{
+				auto * pany = _m_value();
+				if(nullptr == pany)
+					throw std::runtime_error("listbox::item_proxy.value<T>() is empty");
 
-					//Troubleshoot:
-					//If a compiler error that no operator<< overload found for type T occurs, please define a overload operator<<(oresolver&, const T&).
-					//If a listbox have a model set, try call append_model instead.
-					if (set_value)
-						ores << t;	//copy it if it is rvalue and set_value is true.
-					else
-						ores << std::forward<T>(t);
+				auto p = std::any_cast<T>(_m_value());
+				if(nullptr == p)
+					throw std::runtime_error("listbox::item_proxy.value<T>() invalid type of value");
+				return *p;
+			}
+			template<typename T>
+			T & value() 
+			{
+				auto * pany = _m_value();
+				if (nullptr == pany)
+					throw std::runtime_error("listbox::item_proxy.value<T>() is empty");
 
-					_m_append(ores.move_cells());
+				auto p = std::any_cast<T>(_m_value(false));
+				if (nullptr == p)
+					throw std::runtime_error("listbox::item_proxy.value<T>() invalid type of value");
+				return *p;
+			}
+			template<typename T>
+			item_proxy & value(T&& t)
+			{
+				*_m_value(true) = ::std::forward<T>(t);
+				return *this;
+			}
 
-					item_proxy iter{ ess_, index_pair(pos_, size() - 1) };
-					if (set_value)
-						iter.value(std::forward<T>(t));
-
-					_m_update();
-
-					return iter;
-				}
-
-				template<typename T>
-				void append_model(const T& t)
-				{
-					nana::internal_scope_guard lock;
-					_m_try_append_model(const_virtual_pointer{ &t });
-					_m_update();
-				}
-
-				template<typename Mutex, typename STLContainer, typename ValueTranslator, typename CellTranslator>
-				void model(STLContainer&& container, ValueTranslator vtrans, CellTranslator ctrans)
-				{
-					_m_reset_model(new standalone_model_container<typename std::decay<STLContainer>::type, Mutex>(std::forward<STLContainer>(container), std::move(vtrans), std::move(ctrans)));
-				}
-
-				template<typename Mutex, typename STLContainer, typename ValueTranslator, typename CellTranslator>
-				void shared_model(STLContainer& container, ValueTranslator vtrans, CellTranslator ctrans)
-				{
-					_m_reset_model(new shared_model_container<typename std::decay<STLContainer>::type, Mutex>(container, std::move(vtrans), std::move(ctrans)));
-				}
-
-				template<typename Mutex, typename STLContainer, typename CellTranslator>
-				void shared_model(const STLContainer& container, CellTranslator ctrans)
-				{
-					_m_reset_model(new shared_model_container<typename std::decay<STLContainer>::type, Mutex>(container, std::move(ctrans)));
-				}
-
-				model_guard model();
-
-				/// Appends one item at the end of this category with the specifies texts in the column fields
-				void append(std::initializer_list<std::string> texts_utf8);
-				void append(std::initializer_list<std::wstring> texts);
+			/// Behavior of Iterator's value_type
+			bool operator==(::std::string_view sv) const;
+			bool operator==(::std::wstring_view sv) const;
 #ifdef __cpp_char8_t
-				void append(std::initializer_list<std::u8string> texts);
+			bool operator==(::std::u8string_view sv) const;
 #endif
-				void clear();
+			/// Behavior of Iterator
+			item_proxy & operator=(const item_proxy&);
 
-				size_type columns() const;
+			/// Behavior of Iterator
+			item_proxy & operator++();
 
-				cat_proxy& text(std::string);
-				cat_proxy& text(std::wstring);
+			/// Behavior of Iterator
+			item_proxy	operator++(int);
+
+			/// Behavior of Iterator
+			item_proxy& operator*();
+
+			/// Behavior of Iterator
+			const item_proxy& operator*() const;
+
+			/// Behavior of Iterator
+			item_proxy* operator->();
+
+			/// Behavior of Iterator
+			const item_proxy* operator->() const;
+
+			/// Behavior of Iterator
+			bool operator==(const item_proxy&) const;
+
+			/// Behavior of Iterator
+			bool operator!=(const item_proxy&) const;
+
+			//Undocumented method
+			essence * _m_ess() const noexcept;
+		private:
+			std::vector<cell> _m_cells() const;
+			std::any		* _m_value(bool alloc_if_empty);
+			const std::any	* _m_value() const;
+		private:
+			essence * ess_;
+			category_t*	cat_{nullptr};
+
+			index_pair	pos_; //Position of an item, it never represents a category when item proxy is available.
+		};
+
+		class cat_proxy
+			: public ::nana::widgets::detail::widget_iterator<std::input_iterator_tag, cat_proxy>
+		{
+		public:
+			using inline_notifier_interface = drawerbase::listbox::inline_notifier_interface;
+			template<typename Value> using value_translator = typename container_translator<Value>::value_translator;
+			template<typename Value> using cell_translator = typename container_translator<Value>::cell_translator;
+
+			cat_proxy() noexcept = default;
+			cat_proxy(const cat_proxy&) noexcept = default;
+			cat_proxy(essence*, size_type pos) noexcept;
+			cat_proxy(essence*, category_t*) noexcept;
+
+			/// Append an item at the end of this category using the oresolver to generate the texts to be put in each column.
+            ///
+            /// First you have to make sure there is an overload of the operator<<() of the oresolver for the type of the object used here
+            /// If a listbox have a model set, try call append_model instead.
+            template<typename T>
+			item_proxy append(  T&& t,                  ///< Value used by the resolver to generate the texts to be put in each column of the item
+                                bool set_value = false) ///< determines whether to set the object as the value of this item.
+			{
+				oresolver ores(ess_);
+
+				//Troubleshoot:
+				//If a compiler error that no operator<< overload found for type T occurs, please define a overload operator<<(oresolver&, const T&).
+				//If a listbox have a model set, try call append_model instead.
+				if (set_value)
+					ores << t;	//copy it if it is rvalue and set_value is true.
+				else
+					ores << std::forward<T>(t);
+
+				_m_append(ores.move_cells());
+
+				item_proxy iter{ ess_, index_pair(pos_, size() - 1) };
+				if (set_value)
+					iter.value(std::forward<T>(t));
+
+				_m_update();
+
+				return iter;
+			}
+
+			template<typename T>
+			void append_model(const T& t)
+			{
+				nana::internal_scope_guard lock;
+				_m_try_append_model(const_virtual_pointer{ &t });
+				_m_update();
+			}
+
+			template<typename Mutex, typename STLContainer, typename ValueTranslator, typename CellTranslator>
+			void model(STLContainer&& container, ValueTranslator vtrans, CellTranslator ctrans)
+			{
+				_m_reset_model(new standalone_model_container<typename std::decay<STLContainer>::type, Mutex>(std::forward<STLContainer>(container), std::move(vtrans), std::move(ctrans)));
+			}
+
+			template<typename Mutex, typename STLContainer, typename ValueTranslator, typename CellTranslator>
+			void shared_model(STLContainer& container, ValueTranslator vtrans, CellTranslator ctrans)
+			{
+				_m_reset_model(new shared_model_container<typename std::decay<STLContainer>::type, Mutex>(container, std::move(vtrans), std::move(ctrans)));
+			}
+
+			template<typename Mutex, typename STLContainer, typename CellTranslator>
+			void shared_model(const STLContainer& container, CellTranslator ctrans)
+			{
+				_m_reset_model(new shared_model_container<typename std::decay<STLContainer>::type, Mutex>(container, std::move(ctrans)));
+			}
+
+			model_guard model();
+
+			/// Appends one item at the end of this category with the specifies texts in the column fields
+			void append(std::initializer_list<std::string> texts_utf8);
+			void append(std::initializer_list<std::wstring> texts);
 #ifdef __cpp_char8_t
-				cat_proxy& text(std::u8string);
+			void append(std::initializer_list<std::u8string> texts);
 #endif
+			void clear();
 
-				std::string text() const;
+			size_type columns() const;
 
-				cat_proxy & select(bool);
-				bool selected() const;
-
-				/// Enables/disables the number of items in the category to be displayed behind the category title
-				cat_proxy& display_number(bool display);
-
-				/// Determines whether the category is expanded.
-				bool expanded() const;
-
-				/// Expands/collapses the category
-				/**
-				 * @param expand Indicates whether to expand or collapse the category. If this parameter is true, it expands the category. If the parameter is false, it collapses the category.
-				 * @return the reference of *this.
-				 */
-				cat_proxy& expanded(bool expand);
-
-				/// Behavior of a container
-				void push_back(std::string text_utf8);
+			cat_proxy& text(std::string);
+			cat_proxy& text(std::wstring);
 #ifdef __cpp_char8_t
-				void push_back(std::u8string_view text);
+			cat_proxy& text(std::u8string);
 #endif
 
-				item_proxy begin() const;
-				item_proxy end() const;
-				item_proxy cbegin() const;
-				item_proxy cend() const;
+			std::string text() const;
 
-				item_proxy at(size_type pos_abs) const;
-				item_proxy back() const;
+			cat_proxy & select(bool);
+			bool selected() const;
 
-				/// Converts the index between absolute position and display position
-				/**
-				 * @param from	The index to be converted
-				 * @param from_display_order	If this parameter is true, the method converts a display position to an absolute position.
-				 *								If the parameter is false, the method converts an absolute position to a display position.
-				 * @return a display position or an absolute position that are depending on from_display_order.
-				 */
-				size_type index_cast(size_type from, bool from_display_order) const;
+			/// Enables/disables the number of items in the category to be displayed behind the category title
+			cat_proxy& display_number(bool display);
+
+			/// Determines whether the category is expanded.
+			bool expanded() const;
+
+			/// Expands/collapses the category
+			/**
+				* @param expand Indicates whether to expand or collapse the category. If this parameter is true, it expands the category. If the parameter is false, it collapses the category.
+				* @return the reference of *this.
+				*/
+			cat_proxy& expanded(bool expand);
+
+			/// Behavior of a container
+			void push_back(std::string text_utf8);
+#ifdef __cpp_char8_t
+			void push_back(std::u8string_view text);
+#endif
+
+			item_proxy begin() const;
+			item_proxy end() const;
+			item_proxy cbegin() const;
+			item_proxy cend() const;
+
+			item_proxy at(size_type pos_abs) const;
+			item_proxy back() const;
+
+			/// Converts the index between absolute position and display position
+			/**
+				* @param from	The index to be converted
+				* @param from_display_order	If this parameter is true, the method converts a display position to an absolute position.
+				*								If the parameter is false, the method converts an absolute position to a display position.
+				* @return a display position or an absolute position that are depending on from_display_order.
+				*/
+			size_type index_cast(size_type from, bool from_display_order) const;
 				
-				/// this cat position
-				size_type position() const;
+			/// this cat position
+			size_type position() const;
 
-				/// Returns the number of items
-				size_type size() const;
+			/// Returns the number of items
+			size_type size() const;
 
-				/// Behavior of Iterator
-				cat_proxy& operator=(const cat_proxy&);
+			/// Behavior of Iterator
+			cat_proxy& operator=(const cat_proxy&);
 
-				/// Behavior of Iterator
-				cat_proxy & operator++();
+			/// Behavior of Iterator
+			cat_proxy & operator++();
 
-				/// Behavior of Iterator
-				cat_proxy	operator++(int);
+			/// Behavior of Iterator
+			cat_proxy	operator++(int);
 
-				/// Behavior of Iterator
-				cat_proxy& operator*();
+			/// Behavior of Iterator
+			cat_proxy& operator*();
 
-				/// Behavior of Iterator
-				const cat_proxy& operator*() const;
+			/// Behavior of Iterator
+			const cat_proxy& operator*() const;
 
-				/// Behavior of Iterator
-				cat_proxy* operator->();
+			/// Behavior of Iterator
+			cat_proxy* operator->();
 
-				/// Behavior of Iterator
-				const cat_proxy* operator->() const;
+			/// Behavior of Iterator
+			const cat_proxy* operator->() const;
 
-				/// Behavior of Iterator
-				bool operator==(const cat_proxy&) const;
+			/// Behavior of Iterator
+			bool operator==(const cat_proxy&) const;
 
-				/// Behavior of Iterator
-				bool operator!=(const cat_proxy&) const;
+			/// Behavior of Iterator
+			bool operator!=(const cat_proxy&) const;
 
-				void inline_factory(size_type column, pat::cloneable<pat::abstract_factory<inline_notifier_interface>> factory);
-			private:
-				void _m_append(std::vector<cell> && cells);
-				void _m_try_append_model(const const_virtual_pointer&);
-				void _m_cat_by_pos() noexcept;
-				void _m_update() noexcept;
-				void _m_reset_model(model_interface*);
-			private:
-				essence*	ess_{nullptr};
-				category_t*	cat_{nullptr};
-				size_type	pos_{0};  ///< Absolute position, not relative to display, and dont change during sort()
-			};
+			void inline_factory(size_type column, pat::cloneable<pat::abstract_factory<inline_notifier_interface>> factory);
+		private:
+			void _m_append(std::vector<cell> && cells);
+			void _m_try_append_model(const const_virtual_pointer&);
+			void _m_cat_by_pos() noexcept;
+			void _m_update() noexcept;
+			void _m_reset_model(model_interface*);
+		private:
+			essence*	ess_{nullptr};
+			category_t*	cat_{nullptr};
+			size_type	pos_{0};  ///< Absolute position, not relative to display, and dont change during sort()
+		};
 		
-			struct export_options
-			{
-				std::string sep = ::std::string {"\t"}, 
-							 endl= ::std::string {"\n"};
-				bool only_selected_items{true}, 
-					 only_checked_items {false},
-					 only_visible_columns{true};
+		struct export_options
+		{
+			std::string sep = ::std::string {"\t"}, 
+							endl= ::std::string {"\n"};
+			bool only_selected_items{true}, 
+					only_checked_items {false},
+					only_visible_columns{true};
 
-				using columns_indexs = std::vector<size_type>;
-				columns_indexs columns_order;
-			};
+			using columns_indexs = std::vector<size_type>;
+			columns_indexs columns_order;
+		};
 	}//end namespace drawerbase::listbox
 
 	struct arg_listbox
