@@ -1047,7 +1047,8 @@ namespace nana
 				{
 					if(scroll.empty())
 					{
-						scroll.create(*data.widget_ptr, nana::rectangle(data.graph->width() - 16, 0, 16, data.graph->height()));
+						auto scroll_size = platform_abstraction::dpi_scale(data.widget_ptr->handle(), 16u);
+						scroll.create(*data.widget_ptr, nana::rectangle(data.graph->width() - scroll_size, 0, scroll_size, data.graph->height()));
 
 						scroll.events().value_changed.connect_unignorable([this](const arg_scroll&)
 						{
