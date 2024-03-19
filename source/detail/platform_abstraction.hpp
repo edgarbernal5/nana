@@ -70,6 +70,7 @@ namespace nana
 
 		static int dpi_scale(window wd, int scalar);
 		static unsigned int dpi_scale(window wd, unsigned int scalar);
+		static size_t dpi_scale(window wd, size_t scalar);
 		static nana::size dpi_scale(window wd, nana::size size);
 		static nana::point dpi_scale(window wd, nana::point point);
 

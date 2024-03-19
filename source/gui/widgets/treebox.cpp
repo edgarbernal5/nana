@@ -2350,7 +2350,8 @@ namespace nana
 			if(!impl_->shape.scroll->empty())
 			{
 				nana::size s = impl_->data.graph->size();
-				impl_->shape.scroll->move(rectangle{ static_cast<int>(s.width) - 16, 0, 16, s.height });
+				auto scroll_size = platform_abstraction::dpi_scale(impl_->data.widget_ptr->handle(), 16u);
+				impl_->shape.scroll->move(rectangle{ static_cast<int>(s.width) - static_cast<int>(scroll_size), 0, scroll_size, s.height });
 			}
 		}
 

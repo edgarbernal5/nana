@@ -94,9 +94,11 @@ namespace nana
 				void _m_button_frame(graph_reference, ::nana::rectangle, states state);
 				void _m_draw_scroll(graph_reference, states state);
 				void _m_draw_button(graph_reference, ::nana::rectangle, buttons what, states state);
+				size_t _m_button_size() const;
 			public:
 				metrics_type	metrics;
 				bool const		vert;
+				widget*			widget_;
 			};
 
 			template<bool Vertical>
@@ -193,11 +195,11 @@ namespace nana
 				void attached(widget_reference widget, graph_reference graph) override
 				{
 					graph_ = &graph;
-					widget_ = static_cast< ::nana::scroll<Vertical>*>(&widget);
+					widget_ = static_cast<::nana::scroll<Vertical>*>(&widget);
 					widget.caption("nana scroll");
 
 					drawer_.metrics.scheme_ptr = static_cast<drawerbase::scroll::scheme*>(api::dev::get_scheme(widget));
-
+					drawer_.widget_ = &widget;
 					//scroll doesn't want the keyboard focus.
 					api::take_active(widget, false, widget.parent());
 

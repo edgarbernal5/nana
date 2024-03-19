@@ -14,6 +14,7 @@
 #include "content_view.hpp"
 #include <nana/gui/widgets/scroll.hpp>
 #include <algorithm>
+#include "../../../detail/platform_abstraction.hpp"
 
 namespace nana {
 	namespace widgets {
@@ -284,6 +285,11 @@ namespace nana {
 					}
 
 					this->passive = true;
+				}
+
+				unsigned int space() const
+				{
+					return platform_abstraction::dpi_scale(window_handle, 16u);
 				}
 			};
 
@@ -569,6 +575,10 @@ namespace nana {
 			void content_view::set_wheel_speed(std::function<unsigned()> fn)
 			{
 				impl_->provider.wheel_speed = std::move(fn);
+			}
+			unsigned int content_view::space() const
+			{
+				return impl_->space();
 			}
 		}
 	}
