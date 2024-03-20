@@ -428,7 +428,7 @@ namespace nana
 				auto graph_r = available_area();
 
 				bool v = false;
-				auto scroll_scale = platform_abstraction::dpi_scale(scroll.v.handle(), scroll.scale);
+				auto scroll_scale = platform_abstraction::dpi_scale(lister.wd_ptr()->handle(), scroll.scale);
 
 				if (graph_r.height < wd_sz.height)
 				{
@@ -537,7 +537,7 @@ namespace nana
 				//The area to show the widget
 				r = available_area();
 
-				unsigned width = (scroll.v.empty() ? 0 : platform_abstraction::dpi_scale(scroll.v.handle(), scroll.scale));
+				unsigned width = (scroll.v.empty() ? 0 : platform_abstraction::dpi_scale(lister.wd_ptr()->handle(), scroll.scale));
 
 				if (r.width <= width)
 					return false;
