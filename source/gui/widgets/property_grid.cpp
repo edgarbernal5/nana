@@ -347,7 +347,10 @@ namespace nana
 				else
 					scroll.pos.y = val;
 
-				scroll.pos.y = std::max(std::min(0, scroll.pos.y), static_cast<int>(scroll.v.range()) - static_cast<int>(scroll.v.amount()));
+				if (static_cast<int>(scroll.v.range()) > static_cast<int>(scroll.v.amount()))
+					scroll.pos.y = 0;
+				else
+					scroll.pos.y = std::max(std::min(0, scroll.pos.y), static_cast<int>(scroll.v.range()) - static_cast<int>(scroll.v.amount()));
 			}
 
 			int v_offset() const
