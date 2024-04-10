@@ -343,11 +343,11 @@ namespace nana
 		mutable unsigned height;	    ///< new height in pixels. If it is modified, the window's height will be the modified value
 	};
 
-    struct arg_activate : public event_arg
+	struct arg_activate : public event_arg
 	{
-        ::nana::window window_handle; ///< A handle to the event window
-        bool activated;
-    };
+		::nana::window window_handle;	///< A handle to the event window
+		bool activated;					///< app is activated?
+	};
 
 	struct arg_unload : public event_arg
 	{
