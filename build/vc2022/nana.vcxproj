@@ -434,8 +434,10 @@
     <ClCompile Include="..\..\source\gui\widgets\menu.cpp" />
     <ClCompile Include="..\..\source\gui\widgets\menubar.cpp" />
     <ClCompile Include="..\..\source\gui\widgets\panel.cpp" />
+    <ClCompile Include="..\..\source\gui\widgets\pgitems.cpp" />
     <ClCompile Include="..\..\source\gui\widgets\picture.cpp" />
     <ClCompile Include="..\..\source\gui\widgets\progress.cpp" />
+    <ClCompile Include="..\..\source\gui\widgets\property_grid.cpp" />
     <ClCompile Include="..\..\source\gui\widgets\scroll.cpp" />
     <ClCompile Include="..\..\source\gui\widgets\skeletons\content_view.cpp" />
     <ClCompile Include="..\..\source\gui\widgets\skeletons\text_editor.cpp" />
@@ -502,8 +504,10 @@
     <ClInclude Include="..\..\include\nana\gui\widgets\menu.hpp" />
     <ClInclude Include="..\..\include\nana\gui\widgets\menubar.hpp" />
     <ClInclude Include="..\..\include\nana\gui\widgets\panel.hpp" />
+    <ClInclude Include="..\..\include\nana\gui\widgets\pgitems.hpp" />
     <ClInclude Include="..\..\include\nana\gui\widgets\picture.hpp" />
     <ClInclude Include="..\..\include\nana\gui\widgets\progress.hpp" />
+    <ClInclude Include="..\..\include\nana\gui\widgets\property_grid.hpp" />
     <ClInclude Include="..\..\include\nana\gui\widgets\scroll.hpp" />
     <ClInclude Include="..\..\include\nana\gui\widgets\slider.hpp" />
     <ClInclude Include="..\..\include\nana\gui\widgets\spinbox.hpp" />

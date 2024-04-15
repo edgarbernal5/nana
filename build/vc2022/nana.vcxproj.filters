@@ -289,6 +289,12 @@
     <ClCompile Include="..\..\source\gui\detail\virtual_keyboard.cpp">
       <Filter>Sources\gui\detail</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\gui\widgets\property_grid.cpp">
+      <Filter>Sources\gui\widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\gui\widgets\pgitems.cpp">
+      <Filter>Sources\gui\widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\nana\gui\widgets\spinbox.hpp">
@@ -456,8 +462,11 @@
     <ClInclude Include="..\..\include\nana\paint\font_info.hpp" />
     <ClInclude Include="..\..\source\paint\detail\image_format_defs.hpp" />
     <ClInclude Include="..\..\source\paint\detail\image_gif.hpp" />
-    <ClInclude Include="..\..\source\gui\place_parts.hpp">
-      <Filter>Include\gui</Filter>
+    <ClInclude Include="..\..\include\nana\gui\widgets\property_grid.hpp">
+      <Filter>Include\gui\widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\nana\gui\widgets\pgitems.hpp">
+      <Filter>Include\gui\widgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
