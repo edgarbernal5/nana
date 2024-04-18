@@ -188,6 +188,16 @@ namespace nana
 				}, std::placeholders::_1, args...), relative_pane_id, dock_position));
 		}
 
+		/// Add a panel factory
+		template<typename Panel, typename ...Args>
+		Panel* add_pane(const pane_info& info, const std::string& relative_pane_id, dock_position dock_position, Args&& ... args)
+		{
+			return reinterpret_cast<Panel*>(add_pane(info, std::bind([](window parent, Args & ... dock_args)
+				{
+					return std::unique_ptr<widget>(new Panel(parent, std::forward<Args>(dock_args)...));
+				}, std::placeholders::_1, args...), relative_pane_id, dock_position));
+		}
+
 		/// Add a panel factory as float
 		template<typename Panel, typename ...Args>
 		Panel* add_float_pane(const std::string& dock_id, const nana::size& pane_size, Args&& ... args)
@@ -202,6 +212,8 @@ namespace nana
 
 		widget* add_pane(const pane_info& info, std::function<std::unique_ptr<widget>(window)> factory, const std::string& relative_pane_id, dock_position dock_position);
 		widget* add_float_pane(const pane_info& info, std::function<std::unique_ptr<widget>(window)> factory, const nana::size& pane_size);
+
+		void update_pane(const pane_info& info);
 	private:
 		implement* impl_;
 	};

@@ -487,6 +487,12 @@ namespace nana
 				return (nullptr != container_);
 			}
 
+			void update()
+			{
+				caption_.caption(pane_info_->caption);
+				API::refresh_window(*this);
+			}
+
 		private:
 			widget* _m_add_pane(factory& fn)
 			{
