@@ -12,6 +12,9 @@
  *	
  */
 
+#ifndef NANA_DEBUGGER_HPP
+#define NANA_DEBUGGER_HPP
+
 namespace nana
 {
 	namespace debugger
@@ -25,3 +28,5 @@ namespace nana
 		}
 	}
 }
+
+#endif
