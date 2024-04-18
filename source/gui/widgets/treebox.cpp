@@ -871,7 +871,7 @@ namespace nana
 				data.stop_drawing = true;
 				if (node_state.selected)
 				{
-					//node_state.selected through node
+					//node_state.pivot_node through node
 					auto nodes_copy = node_state.nodes_selected;
 					node_state.clear();
 					auto target1 = node_state.pivot_node;
