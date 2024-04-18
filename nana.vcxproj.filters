@@ -434,6 +434,9 @@
     <ClCompile Include="source\datetime.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="source\debugger.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
     <ClCompile Include="source\deploy.cpp">
       <Filter>source</Filter>
     </ClCompile>

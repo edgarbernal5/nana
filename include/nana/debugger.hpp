@@ -17,16 +17,15 @@
 
 namespace nana
 {
-	namespace debugger
+	class debugger
 	{
-		static bool enabled_debug = true;
-		bool is_enabled_print_debug() {
-			return enabled_debug;
-		}
-		void enable_print_debug(bool newValue) {
-			enabled_debug = newValue;
-		}
-	}
+	private:
+		static bool enabled_debug;
+
+	public:
+		static bool is_enabled_print_debug();
+		static void enable_print_debug(bool newValue);
+	};
 }
 
 #endif
