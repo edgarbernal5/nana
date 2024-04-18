@@ -3010,7 +3010,7 @@ namespace nana
 	void place::implement::print_debug()
 	{
 #ifdef _DEBUG
-		if (!debugger::enabled_debug) return;
+		if (!debugger::is_enabled_print_debug()) return;
 
 		unsigned level = 0;
 
@@ -3839,7 +3839,7 @@ namespace nana
 		{
 			hit_fn = [&hit_fn, this](implement::division* div) -> implement::division*
 			{
-				if (division::kind::dock == div->kind_of_division)
+				if (division::kind::dock == div->kind_of_division && div->children.size() == 0)
 				{
 					point pos;
 					API::calc_screen_point(window_handle, pos);
@@ -4790,6 +4790,18 @@ namespace nana
 		dock_ptr->dockarea->float_away({0, 0}, pane_size);
 		return result;
 	}
+
+	void place::update_pane(const pane_info& info)
+	{
+		auto it = impl_->docks.find(info.id);
+		if (it != impl_->docks.end())
+		{
+			it->second->pane_info = info;
+
+			it->second->dockarea->update();
+		}
+	}
+
 	place::error::error(const std::string& what,
 		const place& plc,
 		std::string field,
